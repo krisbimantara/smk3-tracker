@@ -13,20 +13,33 @@ const PHASES = [
     colorLight: "#EEEDFE",
     target: "Bulan 1–2",
     criteria: [
-      { id: "1.1.1", title: "Kebijakan K3 tertulis, bertanggal, tujuan & sasaran", docs: [] },
-      { id: "1.1.3", title: "Komunikasi kebijakan K3 ke seluruh TK, tamu, kontraktor", docs: [] },
-      { id: "1.2.2", title: "Penunjukan penanggung jawab K3 sesuai peraturan", docs: [] },
-      { id: "1.2.4", title: "Pengusaha bertanggung jawab penuh atas SMK3", docs: [] },
-      { id: "1.2.5", title: "Petugas tanggap darurat ditetapkan & dilatih", docs: [] },
-      { id: "1.2.6", title: "Perusahaan mendapat saran dari ahli K3 internal/eksternal", docs: [] },
-      { id: "1.4.1", title: "Keterlibatan & penjadwalan konsultasi TK terdokumentasi", docs: [] },
-      { id: "1.4.3", title: "P2K3 dibentuk sesuai peraturan, SK dari Disnaker", docs: [] },
-      { id: "1.4.4", title: "Ketua P2K3 adalah pimpinan puncak / pengurus", docs: [] },
-      { id: "1.4.5", title: "Sekretaris P2K3 adalah Ahli K3 bersertifikat", docs: [] },
-      { id: "1.4.6", title: "P2K3 fokus pada pengembangan kebijakan & prosedur risiko", docs: [] },
-      { id: "1.4.7", title: "Susunan pengurus P2K3 didokumentasikan & diinformasikan", docs: [] },
-      { id: "1.4.8", title: "P2K3 rapat teratur (min. 1x/bulan), hasil disebarluaskan", docs: [] },
-      { id: "1.4.9", title: "P2K3 melaporkan kegiatan ke Disnaker tiap triwulan", docs: [] },
+      { id: "1.1.1", interpretasi: `Prosedur penyusunan/penetapan dan tinjauan ulang kebijakan K3. Perusahaan membuat kebijakan K3 secara tertulis, bertanggal, isinya mencakup tujuan dan sasaran K3 serta pernyataan tertulis komitmen perusahaan mengenai pelaksanaan K3 di tempat kerjanya.
+Bukti: Tertulis, Tertanggal, Tujuan K3, Sasaran K3, Pernyataan komitmen, Tanda tangan pimpinan.`, title: "Kebijakan K3 tertulis, bertanggal, tujuan & sasaran", docs: [] },
+      { id: "1.1.3", interpretasi: `Diseminasi kebijakan K3 (model dan media yang digunakan). Bentuk komunikasi kebijakan dapat melalui: penempelan poster, pembacaan saat briefing pagi, kartu pengenal visitor, lampiran dalam kontrak, materi briefing bagi tamu, papan pengumuman di pintu masuk, pelatihan pengenalan (induction training) dll.
+Bukti: Papan pengumuman, Brosur/leaflet, Poster, Spanduk/standing banner, Jaringan komputer, Ceramah/briefing (klasikal/non klasikal), Coffee morning.`, title: "Komunikasi kebijakan K3 ke seluruh TK, tamu, kontraktor", docs: [] },
+      { id: "1.2.2", interpretasi: `Dokumen normatif. Ada beberapa penanggung jawab K3 yang sesuai dengan peraturan perundangan yaitu: Sekretaris P2K3/Ahli K3 (Permenaker No.Per.04/MEN/1987 & No.Per.02/MEN/1992), Dokter pemeriksa kesehatan TK (Permenaker No.Per.01/MEN/1976), Paramedis (Permenaker No.Per.01/MEN/1979), Auditor Internal SMK3 (Permenaker No.Per.26/2014), Operator Ketel Uap (Permenaker No.Per.01/MEN/1988), Operator Pesawat Angkat Angkut (Permenaker No.Per.09/MEN/VII/2010), Operator Pes. Tenaga/diesel (Permenaker No.Per.04/MEN/1985), Petugas P3K (Permenakertrans No.Per.15/MEN/VII/2008), Petugas pemadam kebakaran (Kepmenaker No.Kep.186/MEN/1999), Ahli K3 Kimia & Petugas K3 Kimia (Kepmenaker No.Kep.187/MEN/1999), Kualifikasi Juru Las (Permenaker No.Per.02/MEN/1982).
+Bukti: Sertifikat/SKP/SIO dari Kemenaker untuk semua jabatan di atas, SPT personil ybs (perseorangan/tim).`, title: "Penunjukan penanggung jawab K3 sesuai peraturan", docs: [] },
+      { id: "1.2.4", interpretasi: `Dapat dilihat dalam Visi, Misi dan Program K3 yang ditetapkan oleh pengusaha atau pengurus perusahaan serta dukungan SDM dan anggaran.
+Bukti: Visi, Misi, Program K3, Alokasi anggaran. Ref. Dokumen kontrak/RKS.`, title: "Pengusaha bertanggung jawab penuh atas SMK3", docs: [] },
+      { id: "1.2.5", interpretasi: `Tim Tanggap Darurat (Emergency Response Team). Dapat dilihat dari sertifikat pelatihan, dokumentasi latihan darurat, absensi latihan. Penetapan petugas dapat diketahui dari tanda pengenal misalnya topi/helm khusus, badge, warna baju, dll. Petugas dilatih sesuai ketentuan: Petugas Pemadam Kebakaran (Kepmenaker No.Kep.186/MEN/1999), Petugas P3K (Permenakertrans No.Per.15/MEN/VII/2008).
+Bukti: Sertifikat pelatihan, SPT ybs dari perusahaan, Tanda pengenal/atribut ybs.`, title: "Petugas tanggap darurat ditetapkan & dilatih", docs: [] },
+      { id: "1.2.6", interpretasi: `Peran ahli K3 dalam pemberian saran/rekomendasi. Verifikasi peran ahli K3 dalam: Kontrak/format RKS, Checklist verifikasi pembelian barang, Format ijin kerja (working permit), Format pengesahan prosedur/IK.
+Dari dalam: laporan auditor internal K3, laporan inspeksi/rekomendasi ahli K3, laporan studi banding/bench marking.
+Dari luar: laporan kinerja K3 dari konsultan independen, nota pemeriksaan dari pegawai pengawas Disnaker setempat.`, title: "Perusahaan mendapat saran dari ahli K3 internal/eksternal", docs: [] },
+      { id: "1.4.1", interpretasi: `Prosedur Konsultasi, Komunikasi, Informasi K3. Dokumentasi dapat dalam bentuk notulensi kegiatan, jadwal atau time table kegiatan. Wakil perusahaan adalah personil yang ditunjuk oleh manajemen perusahaan.
+Bukti: Dokumen kegiatan konsultasi TK dengan wakil perusahaan, Notulen rapat forum Serikat Pekerja, Notulen rapat forum P2K3, Daftar hadir.`, title: "Keterlibatan & penjadwalan konsultasi TK terdokumentasi", docs: [] },
+      { id: "1.4.3", interpretasi: `Bukti dapat berupa dokumen surat penunjukan/pengesahan P2K3 dari Disnaker setempat.
+Bukti: SK Pengesahan P2K3 dari Disnaker setempat.`, title: "P2K3 dibentuk sesuai peraturan, SK dari Disnaker", docs: [] },
+      { id: "1.4.4", interpretasi: `Pejabat Ketua P2K3 adalah pimpinan tertinggi perusahaan. Lihat pada dokumen 1.4.3 siapa yang menjabat sebagai ketua P2K3. Seharusnya pengurus atau pimpinan puncak perusahaan, yang dimaksud pengurus disini sesuai dengan Permenaker No.Per.04/MEN/1987 pasal 3 ayat (1).`, title: "Ketua P2K3 adalah pimpinan puncak / pengurus", docs: [] },
+      { id: "1.4.5", interpretasi: `Pejabat Sekretaris P2K3 adalah ahli K3. Sekretaris P2K3 adalah Ahli K3 sesuai dengan Permenaker No.Per.04/MEN/1987 pasal 3 ayat (2).
+Bukti: Surat penunjukan ahli K3 dan sertifikat pelatihan (ahli K3 umum) sesuai Permenaker No.Per.02/MEN/1992.`, title: "Sekretaris P2K3 adalah Ahli K3 bersertifikat", docs: [] },
+      { id: "1.4.6", interpretasi: `Prioritas kegiatan P2K3. Lihat pada program-program K3 yang direncanakan atau sedang dilaksanakan oleh P2K3, apakah terkait dengan: pengembangan atau peninjauan kebijakan dan prosedur pengendalian risiko terkait temuan dari hasil penilaian risiko (notulen rapat P2K3) sesuai dengan tugas dan fungsi P2K3 yang tercantum dalam Permenaker No.Per.04/MEN/1987.`, title: "P2K3 fokus pada pengembangan kebijakan & prosedur risiko", docs: [] },
+      { id: "1.4.7", interpretasi: `Susunan pengurus P2K3. Dapat dilihat dari mekanisme pemberitahuan/pengumuman berkaitan dengan informasi K3 dan jumlah tenaga kerja yang mengetahui kepengurusan P2K3.
+Bukti: Model dan jenis media pemberitahuan/pengumuman pengurus P2K3, Sampling jumlah tenaga kerja yang tahu pengurus P2K3.`, title: "Susunan pengurus P2K3 didokumentasikan & diinformasikan", docs: [] },
+      { id: "1.4.8", interpretasi: `Rapat P2K3. Pertemuan P2K3 minimal dilakukan 1 kali dalam sebulan atau sesuai ketentuan dalam prosedur mengenai P2K3.
+Bukti: Jadwal rapat P2K3, Notulen, Daftar hadir, Rekomendasi hasil rapat, Penyebarluasan kegiatan P2K3.`, title: "P2K3 rapat teratur (min. 1x/bulan), hasil disebarluaskan", docs: [] },
+      { id: "1.4.9", interpretasi: `Laporan rutin P2K3. Sesuai Permenaker No.Per.04/MEN/1987 tiap 3 bulan sekali kegiatan P2K3 harus dilaporkan ke Disnaker setempat menggunakan format pelaporan yang disediakan sesuai peraturan.
+Bukti: Laporan kegiatan setiap bulan setelah rapat bulanan P2K3, Laporan triwulan kepada Disnaker setempat, Tanda terima dari Disnaker setempat.`, title: "P2K3 melaporkan kegiatan ke Disnaker tiap triwulan", docs: [] },
     ],
   },
   {
@@ -38,14 +51,22 @@ const PHASES = [
     colorLight: "#E1F5EE",
     target: "Bulan 2–4",
     criteria: [
-      { id: "2.1.1", title: "Prosedur HIRARC: identifikasi bahaya, penilaian & pengendalian risiko", docs: [] },
-      { id: "2.4.1", title: "Informasi K3 disebarluaskan sistimatis ke seluruh pihak", docs: [] },
-      { id: "3.1.1", title: "HIRARC terintegrasi dalam prosedur perancangan & modifikasi", docs: [] },
-      { id: "3.2.2", title: "Identifikasi bahaya pada tinjauan kontrak oleh petugas kompeten", docs: [] },
-      { id: "4.1.1", title: "Dokumen K3 memiliki identifikasi status, wewenang & tanggal", docs: [] },
-      { id: "5.1.1", title: "Prosedur pembelian memuat spesifikasi K3 (MSDS, APD, dll.)", docs: [] },
-      { id: "5.1.2", title: "Spesifikasi pembelian sarana produksi sesuai standar K3", docs: [] },
-      { id: "5.2.1", title: "Barang & jasa yang dibeli diperiksa sesuai spesifikasi", docs: [] },
+      { id: "2.1.1", interpretasi: `Prosedur Risk Management (HIRARC). Terdapat rencana atau program kegiatan untuk mengendalikan risiko yang diidentifikasi. Bentuk dokumen dapat berupa program/rencana K3 atau manajemen program. Untuk penerapannya dapat dilihat dari pemantauan/monitoring program kerja yang berkaitan dengan pengendalian risiko tsb.
+Bukti: Checklist HIRARC (Hazard Identification, Hazard Evaluation, Hazard Control), Laporan hasil MONEV, Program kegiatan pengendalian risiko.`, title: "Prosedur HIRARC: identifikasi bahaya, penilaian & pengendalian risiko", docs: [] },
+      { id: "2.4.1", interpretasi: `Penyebaran informasi dan kegiatan K3. Bentuknya dapat berupa (tulisan, lisan, tanda) papan pengumuman, foto-foto, poster, label, verbal dalam rapat, briefing/apel, email, dll. Tata caranya dapat dilihat dari prosedur komunikasi. Ada bagian/personil yang ditunjuk sebagai penanggung jawab.
+Bukti: Model dan media komunikasi, Penyebaran informasi kegiatan K3 (verbal/email/papan pengumuman), Jenis kegiatan dan informasi K3 yang disebarkan (foto, label, tanda-tanda, poster, dll), Bagian/personil yang ditunjuk sebagai penanggung jawab.`, title: "Informasi K3 disebarluaskan sistimatis ke seluruh pihak", docs: [] },
+      { id: "3.1.1", interpretasi: `Prosedur perancangan dan modifikasi. Terdapat dokumentasi tertulis berupa prosedur perancangan dan modifikasi yang di dalamnya terdapat identifikasi bahaya dan penilaian risiko (manajemen risiko). Lihat detail isi prosedurnya, bagaimana tahapan manajemen risiko tsb dimasukkan pada tahap perancangan.
+Bukti: HIRARC pada tahap prosedur perancangan dan modifikasi.`, title: "HIRARC terintegrasi dalam prosedur perancangan & modifikasi", docs: [] },
+      { id: "3.2.2", interpretasi: `Petugas yang berkompeten sesuai peraturan perundangan. Ada petugas yang ditunjuk bertanggung jawab dan memiliki kualifikasi sesuai peraturan perundangan. Persyaratan personil yang melakukan kegiatan tsb tercakup dan diatur dalam prosedur tsb (minimal telah mendapat pelatihan ahli K3 dan manajemen risiko serta yang berpengalaman di bidangnya).
+Bukti: Petugas yang ditunjuk bertanggung jawab dan memiliki kualifikasi sesuai peraturan perundangan (Ahli K3), Persyaratan personil tercakup dalam prosedur kontrak, Minimal telah mendapat pelatihan manajemen risiko yang diutamakan berpengalaman di bidangnya.`, title: "Identifikasi bahaya pada tinjauan kontrak oleh petugas kompeten", docs: [] },
+      { id: "4.1.1", interpretasi: `Prosedur pengendalian dokumen. Dapat dilihat dari acuan prosedur pengendalian dokumen yang telah ditetapkan, dimana status dokumen dapat berupa tata cara penomoran (kodefikasi dokumen), wewenang dapat berupa siapa personil yang dapat menyetujui dokumen, terdapat tanggal pengeluaran dan modifikasi dokumen bila terjadi perubahan.
+Bukti: Acuan prosedur pengendalian dokumen, Status dokumen/kodefikasi, Personil yang berwenang menyetujui dokumen, Tanggal pengeluaran, Catatan modifikasi dokumen bila terjadi perubahan.`, title: "Dokumen K3 memiliki identifikasi status, wewenang & tanggal", docs: [] },
+      { id: "5.1.1", interpretasi: `Prosedur pembelian. Adanya prosedur tertulis mengenai pembelian barang atau jasa dimana spesifikasi K3 dan informasi lain yang terkait dicantumkan dalam salah satu klausul prosedur tsb secara jelas, misalkan adanya MSDS untuk pembelian bahan kimia, informasi yang relevan untuk pembelian APD, dll.
+Bukti: Prosedur tertulis mengenai pembelian barang atau jasa, Spesifikasi K3 dan informasi lain yang terkait dicantumkan secara jelas (MSDS untuk pembelian bahan kimia, informasi relevan untuk pembelian APD, dll).`, title: "Prosedur pembelian memuat spesifikasi K3 (MSDS, APD, dll.)", docs: [] },
+      { id: "5.1.2", interpretasi: `Kriteria ini merupakan aplikasi dari kriteria 5.1.1 sesuai persyaratan peraturan dan standar K3. Perusahaan dapat menunjukkan contoh catatan purchase order yang memasukkan item K3 saat pembeliannya secara jelas.
+Bukti: Spesifikasi pembelian untuk setiap sarana produksi, zat kimia atau jasa sesuai dengan persyaratan peraturan dan standar K3.`, title: "Spesifikasi pembelian sarana produksi sesuai standar K3", docs: [] },
+      { id: "5.2.1", interpretasi: `RKS pembelian (Ref. 5.1.1). Dilakukan pemeriksaan terhadap barang dan jasa kesesuaiannya dengan spesifikasi pembelian yang telah ditetapkan dalam 5.1.1.
+Bukti: Spek pembelian (checklist).`, title: "Barang & jasa yang dibeli diperiksa sesuai spesifikasi", docs: [] },
     ],
   },
   {
@@ -57,34 +78,61 @@ const PHASES = [
     colorLight: "#E6F1FB",
     target: "Bulan 3–6",
     criteria: [
-      { id: "6.1.1", title: "Petugas kompeten mengidentifikasi bahaya & menilai risiko proses kerja", docs: [] },
-      { id: "6.1.5", title: "Sistem ijin kerja (work permit) untuk tugas berisiko tinggi", docs: [] },
-      { id: "6.1.6", title: "APD disediakan, digunakan benar & dipelihara layak pakai", docs: [] },
-      { id: "6.1.7", title: "APD dinyatakan layak pakai sesuai standar & peraturan", docs: [] },
-      { id: "6.2.1", title: "Pengawasan pekerjaan: checklist & log book inspeksi harian", docs: [] },
-      { id: "6.3.1", title: "Persyaratan tugas & kesehatan untuk seleksi & penempatan TK", docs: [] },
-      { id: "6.3.2", title: "Penugasan berdasarkan kemampuan, keterampilan & kewenangan", docs: [] },
-      { id: "6.4.1", title: "Penilaian risiko untuk area pembatasan ijin masuk", docs: [] },
-      { id: "6.4.2", title: "Pengendalian area terbatas: ijin tertulis, penguncian, rambu", docs: [] },
-      { id: "6.4.3", title: "Fasilitas & layanan (toilet, loker, poliklinik, air minum, dll.)", docs: [] },
-      { id: "6.4.4", title: "Rambu K3 terpasang sesuai standar (safety sign, EXIT, APAR)", docs: [] },
-      { id: "6.5.2", title: "Catatan pemeriksaan, pemeliharaan & perbaikan sarana produksi", docs: [] },
-      { id: "6.5.3", title: "Sarana produksi bersertifikat masih berlaku (ketel uap, pesawat angkat)", docs: [] },
-      { id: "6.5.4", title: "Pemeliharaan & perbaikan oleh petugas kompeten & berwenang", docs: [] },
-      { id: "6.5.7", title: "Sistem penandaan (tag-out / LOTO) peralatan tidak aman", docs: [] },
-      { id: "6.5.8", title: "Sistem penguncian (lock-out) untuk mencegah pengoperasian prematur", docs: [] },
-      { id: "6.5.9", title: "Prosedur pengamanan area saat pemeliharaan & perbaikan", docs: [] },
-      { id: "6.7.4", title: "Petugas darurat ditetapkan, dilatih & diinformasikan ke TK", docs: [] },
-      { id: "6.7.6", title: "Peralatan darurat (hydrant, APAR, alarm) diperiksa & diuji berkala", docs: [] },
-      { id: "6.8.1", title: "Alat P3K dievaluasi sesuai peraturan (checklist kelengkapan)", docs: [] },
-      { id: "6.8.2", title: "Petugas P3K dilatih & ditunjuk sesuai peraturan", docs: [] },
-      { id: "9.1.1", title: "Prosedur HIRARC penanganan material manual & mekanis", docs: [] },
-      { id: "9.1.2", title: "Identifikasi & penilaian risiko material oleh petugas kompeten", docs: [] },
-      { id: "9.2.1", title: "Prosedur penyimpanan & pemindahan bahan aman (housekeeping)", docs: [] },
-      { id: "9.2.3", title: "Prosedur pembuangan bahan secara aman sesuai peraturan", docs: [] },
-      { id: "9.3.1", title: "Prosedur penyimpanan, penanganan & pemindahan BKB", docs: [] },
-      { id: "9.3.3", title: "Sistem identifikasi & pelabelan bahan kimia berbahaya", docs: [] },
-      { id: "9.3.4", title: "Rambu peringatan bahaya bahan kimia terpampang sesuai standar", docs: [] },
+      { id: "6.1.1", interpretasi: `Petugas manajemen risiko yang berkompeten (Ref. 2.1.2). Perusahaan telah menunjuk personil untuk melakukan manajemen risiko. Bukti penerapannya dapat dilihat dari catatan manajemen risiko untuk setiap tahapan proses kerja. Kompetensi petugas dapat dilihat dari sertifikat atau catatan pelatihan manajemen risiko, job desc atau wewenangnya, atau dari track record pengalaman serta catatan manajemen risiko sesuai dengan tata cara perhitungan yang telah ditetapkan.
+Bukti: Penunjukan personil untuk manajemen risiko, Catatan manajemen risiko untuk setiap tahapan proses kerja, Sertifikat/catatan pelatihan manajemen risiko, job desc/wewenang, track record pengalaman.`, title: "Petugas kompeten mengidentifikasi bahaya & menilai risiko proses kerja", docs: [] },
+      { id: "6.1.5", interpretasi: `Sistem ijin kerja. Bila ada pengembangan dan atau perubahan terhadap prosedur kerja/instruksi kerja maka harus mengacu kepada ketentuan peraturan perundangan, standar atau ketentuan lainnya yang terkait. Pada prosedur kerja/instruksi kerja dapat dilihat siapa personil yang membuat, mereview dan menyetujui pada halaman terdepan. Prasyarat pemenuhan kompetensi petugas dapat dilihat dalam prosedur pengendalian dokumen yang mengatur pembuatan dan persetujuan dokumen.
+Bukti: Prosedur kerja/instruksi kerja yang mengacu peraturan perundangan, Kolom referensi standar/peraturan, Kolom pembuat/reviewer/approver, Notulensi rapat perubahan prosedur.`, title: "Sistem ijin kerja (work permit) untuk tugas berisiko tinggi", docs: [] },
+      { id: "6.1.6", interpretasi: `Manajemen APD. Pemeliharaan/penyimpanan dan penggunaan APD dilakukan secara benar sesuai dengan spesifikasi dan petunjuk pabrik pembuat atau standar teknis yang berlaku secara universal.
+Ref: Permenakertrans No.PER.08/2010 tentang APD, Inst. Menaker No.Inst.02/M/BW/1984 tentang Pengesahan APD, SE Dirjen BINAWAS No.SE.05/BW/1997 tentang Pendaftaran APD.
+Bukti: Catatan pemeliharaan/penyimpanan APD, Catatan penggunaan APD, Spesifikasi dan petunjuk pabrik pembuat atau standar teknis yang digunakan.`, title: "APD disediakan, digunakan benar & dipelihara layak pakai", docs: [] },
+      { id: "6.1.7", interpretasi: `APD layak pakai. Kesesuaian APD dengan standar/peraturan perundangan yang berlaku dapat dilihat pada spesifikasi teknisnya yang berasal dari pihak supplier yang tercantum dalam informasi brosur maupun sertifikat uji kelayakan dari pihak yang berwenang yang terlampir (sertifikasi produk). Uji kelayakan dapat mengacu kepada beberapa standar yang berlaku secara universal misal SNI, BS, ISO, dll.
+Bukti: Spesifikasi teknis dari supplier, Sertifikat uji kelayakan dari pihak yang berwenang, Kesesuaian APD dengan spesifikasi teknis, Sertifikasi produk terlampir.`, title: "APD dinyatakan layak pakai sesuai standar & peraturan", docs: [] },
+      { id: "6.2.1", interpretasi: `Prosedur dan petunjuk kerja yang telah ditentukan dalam pengawasan. Ada kegiatan pengawasan terhadap pelaksanaan pekerjaan di tempat kerja. Biasanya menjadi tanggung jawab supervisor atau yang setingkat. Lihat pada uraian tanggung jawabnya.
+Bukti: Prosedur dan petunjuk kerja yang telah ditentukan, Kegiatan pengawasan terhadap pelaksanaan pekerjaan di tempat kerja, Tanggung jawab supervisor atau yang setingkat integral dengan pelaksanaan K3, Bukti dokumen berupa checklist, catatan pekerjaan/log book inspeksi harian, dsb.`, title: "Pengawasan pekerjaan: checklist & log book inspeksi harian", docs: [] },
+      { id: "6.3.1", interpretasi: `Prosedur Penempatan Personil. Persyaratan tugas tertentu termasuk persyaratan kesehatan diidentifikasi. Perusahaan menetapkan syarat kesehatan dalam penerimaan pekerja. Lihat pada prosedur penerimaan pekerja dan data-data aktifitas pemeriksaan kesehatan tenaga kerja selama ini.
+Bukti: Ref. prosedur umum penerimaan pegawai/pekerja, Daftar pekerjaan/tugas tertentu yang termasuk dalam kategori potensi bahaya tinggi, Persyaratan kesehatan terkait dengan tugas tertentu telah ditetapkan.`, title: "Persyaratan tugas & kesehatan untuk seleksi & penempatan TK", docs: [] },
+      { id: "6.3.2", interpretasi: `Penugasan pekerjaan harus berdasarkan pada kemampuan. Sama dengan 6.3.1 dan terdapat job qualification untuk setiap jabatan yang mencakup minimal pelatihan dan latar belakang pendidikan serta pengalaman.
+Bukti: Job qualification untuk setiap jabatan, Persyaratan pelatihan minimal dan latar belakang pendidikan serta pengalaman, Bukti dokumen level III dan level IV untuk implementasinya.`, title: "Penugasan berdasarkan kemampuan, keterampilan & kewenangan", docs: [] },
+      { id: "6.4.1", interpretasi: `Daerah-daerah yang memerlukan pembatasan ijin masuk. Adanya dokumen atau daftar daerah-daerah di tempat kerja yang memerlukan ijin masuk. Dapat juga dicek langsung ke lapangan atau dilihat dari catatan manajemen risiko yang telah dilakukan.
+Bukti: Dokumen atau daftar daerah-daerah di tempat kerja yang memerlukan ijin masuk berdasarkan dokumen manajemen risiko, Dapat dicek langsung ke lapangan (dokumen level IV) atau dilihat dari catatan manajemen risiko yang telah dilakukan.`, title: "Penilaian risiko untuk area pembatasan ijin masuk", docs: [] },
+      { id: "6.4.2", interpretasi: `Pembatasan ijin masuk. Pada daerah-daerah tsb dilakukan pengendalian yang dapat berupa ijin tertulis, penguncian, rambu-rambu, dll.
+Bukti: Pembatasan ijin masuk pada daerah-daerah tsb dilakukan berupa ijin tertulis, penguncian, rambu-rambu, dsb.`, title: "Pengendalian area terbatas: ijin tertulis, penguncian, rambu", docs: [] },
+      { id: "6.4.3", interpretasi: `Tersedianya fasilitas dan layanan. Fasilitas yaitu kamar mandi, wastafel, shower, loker/ruangan ganti, mushola, ruang makan, kantin, sarana olah raga, poliklinik, alat bantu kerja seperti tangga, lantai ruang, transportasi, dll. Layanan yaitu penyediaan air minum bersih, layanan makan, layanan kesehatan, dll.
+Verifikasi kelengkapan fasilitas dan layanan yang tersedia di tempat kerja sesuai standar dan pedoman teknis.`, title: "Fasilitas & layanan (toilet, loker, poliklinik, air minum, dll.)", docs: [] },
+      { id: "6.4.4", interpretasi: `Pemasangan rambu-rambu K3. Rambu K3 (safety sign, warning sign, poster, rambu APD, rambu APAR, rambu parkir, dll) dan pintu darurat dipasang sesuai standar berdasarkan pedoman teknis yang berlaku, mempunyai sinyal penerangan minimal 10 lux dan berwarna hijau serta tulisan putih dan mempunyai tanda bertuliskan 'keluar' atau 'exit' di atasnya dan menghadap ke koridor.
+Bukti: Rambu K3 (safety sign, warning sign, poster, rambu APD, rambu APAR, rambu parkir, dll), Pintu darurat sesuai standar, Sinyal penerangan minimal 10 lux, Berwarna hijau dengan tulisan putih, Tanda 'keluar'/'exit' menghadap ke koridor.`, title: "Rambu K3 terpasang sesuai standar (safety sign, EXIT, APAR)", docs: [] },
+      { id: "6.5.2", interpretasi: `Catatan yang memuat data secara rinci dari kegiatan pemeriksaan, pemeliharaan, perbaikan dan perubahan. Perusahaan menyimpan catatan-catatan pemeliharaan yang dilakukan, berbentuk daftar riwayat pemeriksaan alat baik dalam bentuk soft copy atau hard copy.
+Bukti: Daftar sarana dan peralatan produksi, Daftar riwayat pemeriksaan alat dalam bentuk soft copy atau hard copy.`, title: "Catatan pemeriksaan, pemeliharaan & perbaikan sarana produksi", docs: [] },
+      { id: "6.5.3", interpretasi: `Sertifikat/pengesahan/ijin. Perusahaan memiliki sertifikat (ijin/pengesahan pemakaian) sarana produksi yang masih berlaku. Sarana produksi yang dimaksud antara lain: bejana tekanan (Permenaker No.Per.01/MEN/1982), pesawat angkat dan angkut (Permenaker No.Per.05/MEN/1985), pesawat tenaga dan produksi (Permenaker No.Per.04/MEN/1985), pesawat uap (UU dan Peraturan Uap 1930).
+Bukti: Sertifikat/ijin/pengesahan pemakaian sarana produksi yang masih berlaku, Daftar sarana produksi, Jadwal monitoring terhadap peralatan dalam obyek pengawasan, Jadwal kedaluwarsa sertifikat beserta jadwal resertifikasi peralatan.`, title: "Sarana produksi bersertifikat masih berlaku (ketel uap, pesawat angkat)", docs: [] },
+      { id: "6.5.4", interpretasi: `Petugas yang berkompeten dan berwenang. Lihat kompetensi personil yang melakukan kegiatan perawatan sarana produksi tsb (sertifikat, lisensi, pengalaman). Jika dilakukan oleh pihak ke-3 dapat menunjukkan CV beserta sertifikat pelaksana berdasarkan proposal yang dikirimkan, kemudian dibandingkan dengan laporan/berita acara penyelesaian pekerjaan apakah sama.
+Bukti: Sertifikat, lisensi, pengalaman personil, Jika pihak ke-3: sertifikat ahli K3 dan lisensi (SKP) ybs, Verifikasi laporan/berita acara penyelesaian pekerjaan dengan proposal yang diajukan.`, title: "Pemeliharaan & perbaikan oleh petugas kompeten & berwenang", docs: [] },
+      { id: "6.5.7", interpretasi: `Terdapat sistem untuk penandaan (LOTO). Penandaan pada mesin/sarana produksi yang sedang diperbaiki atau rusak ini dapat dituangkan dalam prosedur pemeliharaan yang mencakup lock-out dan tag-out (LOTO) atau prosedur lock-out dan tag-out (LOTO) bila terpisah. Lihat rekaman penandaan yang ada dibandingkan dengan prosedurnya.
+Bukti: Penandaan pada mesin/sarana produksi yang sedang diperbaiki atau rusak, Rekaman penandaan yang ada dibandingkan dengan prosedurnya, Pelaksanaan di lapangan/tempat kerja.`, title: "Sistem penandaan (tag-out / LOTO) peralatan tidak aman", docs: [] },
+      { id: "6.5.8", interpretasi: `Sistem penguncian pengoperasian (lock out sistem). Terdapat mekanisme penguncian (lihat bentuk/sistem penguncian yang digunakan) terkait dengan prosedur pemeliharaan/perbaikan atau prosedur lock-out dan tag-out (LOTO) bila terpisah. Rekamannya dapat dilihat pada daftar pelaksanaan lock-out dan dibandingkan dengan prosedurnya.
+Bukti: Mekanisme penguncian terkait prosedur pemeliharaan/perbaikan, Prosedur lock-out dan tag-out (LOTO), Rekaman daftar pelaksanaan lock-out dibandingkan dengan prosedur.`, title: "Sistem penguncian (lock-out) untuk mencegah pengoperasian prematur", docs: [] },
+      { id: "6.5.9", interpretasi: `Prosedur pengamanan area. Terdapat prosedur yang dapat menjamin pengamanan area yang saat proses pemeriksaan, pemeliharaan, perbaikan dan perubahan dilakukan.
+Bukti: Prosedur yang dapat menjamin pengamanan area saat proses pemeriksaan, pemeliharaan, perbaikan dan perubahan, Dokumen dalam bentuk formulir/checklist yang digunakan.`, title: "Prosedur pengamanan area saat pemeliharaan & perbaikan", docs: [] },
+      { id: "6.7.4", interpretasi: `Petugas penanganan keadaan darurat (ER). Khusus petugas darurat telah diberi pelatihan spesifik darurat sesuai dengan peran dan tugasnya (damkar/P3K). Rekaman dapat berupa daftar hadir dan atau sertifikat pelatihan serta catatan pelatihan terkait. Untuk tim kebakaran dapat mengacu pada Kepmenaker No.Kep.186/MEN/1999.
+Bukti: Petugas darurat telah ditetapkan, Pelatihan spesifik sesuai peran dan tugasnya (damkar, P3K, evakuasi), Sertifikat pelatihan, Rekaman daftar hadir dan catatan pelatihan. Ref: Kepmenaker No.Kep.187/MEN/1999, Permenakertrans No.Per.15/VII/2008.`, title: "Petugas darurat ditetapkan, dilatih & diinformasikan ke TK", docs: [] },
+      { id: "6.7.6", interpretasi: `Peralatan dan sistem tanda bahaya keadaan darurat diperiksa dan diuji. Lihat pada catatan-catatan inspeksi, pengujian dan sertifikat hasil pengujian dan laporan maintenance-nya beserta penjadwalannya. Seperti pemeriksaan dan pengujian peralatan: hydrant, sprinkle, fire detector, fire alarm, APAR, emergency lamp, emergency shower, breathing apparatus, dll.
+Bukti: Disediakan, diperiksa, diuji dan dipelihara secara berkala sesuai peraturan perundangan, standar dan pedoman teknis yang relevan, Catatan inspeksi/pengujian, Sertifikat hasil pengujian, Laporan maintenance beserta penjadwalannya.`, title: "Peralatan darurat (hydrant, APAR, alarm) diperiksa & diuji berkala", docs: [] },
+      { id: "6.8.1", interpretasi: `Alat P3K. Ada kegiatan pengecekan terhadap kondisi isi dari kotak P3K, biasanya berupa checklist tentang kelengkapan obat, jumlah pemakaian, penggantian, dll.
+Bukti: Pengecekan terhadap kondisi isi dari kotak P3K, Checklist tentang kelengkapan obat, jumlah pemakaian, penggantian, dll.`, title: "Alat P3K dievaluasi sesuai peraturan (checklist kelengkapan)", docs: [] },
+      { id: "6.8.2", interpretasi: `Petugas P3K. Ada petugas P3K yang ditunjuk pimpinan perusahaan. Petugas tsb dapat dari lingkungan pekerja atau personil medis di klinik. Pelatihan P3K bagi petugas yang ditunjuk sesuai dengan Permenaker No.Per.03/MEN/1982 tentang Pelayanan Kesehatan Kerja jo. Permenakertrans No.Per.15/MEN/VIII/2008 tentang P3K di Tempat Kerja.
+Bukti: Ada petugas P3K yang ditunjuk pimpinan perusahaan, Petugas berasal dari lingkungan pekerja atau personil medis di klinik, Pelatihan P3K sesuai Permenaker No.Per.03/MEN/1982 jo. Permenakertrans No.Per.15/MEN/VIII/2008.`, title: "Petugas P3K dilatih & ditunjuk sesuai peraturan", docs: [] },
+      { id: "9.1.1", interpretasi: `Prosedur Penanganan secara manual dan mekanis. Prosedur yang dimaksud yaitu prosedur manajemen risiko seperti pada 2.1.1 dan 6.1.1 tetapi kriteria ini lebih fokus pada kegiatan penanganan bahan secara manual dan mekanis. Bukti penerapannya lihat hasil laporan risk assessment pada kegiatan tsb.
+Bukti: Prosedur manajemen risiko untuk penanganan secara manual dan mekanis, Mengacu dokumen manajemen risiko kriteria 2.1.1 dan 6.1.1, Laporan/rekaman HIRARC untuk kegiatan ybs.`, title: "Prosedur HIRARC penanganan material manual & mekanis", docs: [] },
+      { id: "9.1.2", interpretasi: `Petugas yang berkompeten. Verifikasi petugas yang melakukan risk assessment.
+Bukti: Rekaman/laporan HIRARC, Petugas yang melakukan verifikasi risk assessment, Sertifikat pelatihan manajemen risiko.`, title: "Identifikasi & penilaian risiko material oleh petugas kompeten", docs: [] },
+      { id: "9.2.1", interpretasi: `Prosedur penyimpanan dan pemindahan bahan. Semua kriteria ini dapat ditunjukkan dengan suatu prosedur dan penerapannya mengenai penanganan bahan agar teratur dan rapi dalam penyimpanan (housekeeping).
+Bukti: Dokumen prosedur, IK dan formulir/checklist penerapannya mengenai penanganan bahan agar teratur dan rapi dalam penyimpanan (housekeeping).`, title: "Prosedur penyimpanan & pemindahan bahan aman (housekeeping)", docs: [] },
+      { id: "9.2.3", interpretasi: `Prosedur pembuangan bahan dengan cara yang aman. Bila tidak dipakai akan dibuang dengan cara yang aman (seperti untuk pembuangan limbah oli dipersyaratkan ke penampung yang mempunyai ijin dan limbah cair ke PPLI), dll.
+Bukti: Tempat pembuangan sementara, Tempat pembuangan akhir/final, Dokumen/data jenis, jumlah, klasifikasi bahaya, SOP dan IK, Formulir/checklist terkait kegiatan.`, title: "Prosedur pembuangan bahan secara aman sesuai peraturan", docs: [] },
+      { id: "9.3.1", interpretasi: `Prosedur mengenai penyimpanan, penanganan dan pemindahan BKB dengan cara yang aman. Ada prosedur tertulis mengenai kegiatan-kegiatan tsb untuk bahan berbahaya, dapat berupa prosedur atau instruksi kerja terkait dengan penggunaan bahan kimia tsb. Peraturan yang mengatur tentang pengendalian bahan kimia berbahaya yaitu Kepmenaker No.Kep.187/MEN/1999.
+Bukti: Mengacu peraturan yang mengatur tentang pengendalian bahan kimia berbahaya yaitu Kepmenaker No.Kep.187/MEN/1999.`, title: "Prosedur penyimpanan, penanganan & pemindahan BKB", docs: [] },
+      { id: "9.3.3", interpretasi: `Pemberian label pada bahan kimia berbahaya. Ada pelabelan pada wadah bahan kimia, yang penting label ini maksudnya diketahui oleh para pengguna bahan kimia. Bukti penerapan di lapangan yaitu semua wadah bahan kimia mempunyai label yang berisi nama zat, sifat bahaya/rambu bahaya dan tindakan bila keadaan darurat.`, title: "Sistem identifikasi & pelabelan bahan kimia berbahaya", docs: [] },
+      { id: "9.3.4", interpretasi: `Rambu peringatan bahaya. Rambu peringatan ini menjelaskan bahaya dari bahan kimia yang ada di tempat kerja, misalnya rambu sifat bahan tsb seperti flammable, explosive, poison, dll.`, title: "Rambu peringatan bahaya bahan kimia terpampang sesuai standar", docs: [] },
     ],
   },
   {
@@ -96,15 +144,22 @@ const PHASES = [
     colorLight: "#FAEEDA",
     target: "Bulan 5–8",
     criteria: [
-      { id: "7.1.1", title: "Inspeksi tempat kerja & cara kerja dilaksanakan secara teratur", docs: [] },
-      { id: "7.2.1", title: "Pemantauan lingkungan kerja teratur & terdokumentasi", docs: [] },
-      { id: "7.2.2", title: "Pemantauan mencakup faktor fisik, kimia, biologis, radiasi & psikologis", docs: [] },
-      { id: "7.2.3", title: "Pemantauan lingkungan oleh petugas kompeten & berwenang", docs: [] },
-      { id: "7.4.1", title: "Pemantauan kesehatan TK di area bahaya tinggi sesuai peraturan", docs: [] },
-      { id: "7.4.3", title: "Pemeriksaan kesehatan oleh dokter pemeriksa yang ditunjuk", docs: [] },
-      { id: "7.4.4", title: "Pelayanan kesehatan kerja tersedia sesuai peraturan", docs: [] },
-      { id: "7.4.5", title: "Catatan pemantauan kesehatan TK sesuai peraturan (rekap medis)", docs: [] },
-      { id: "8.3.1", title: "Prosedur pemeriksaan & pengkajian kecelakaan kerja dan PAK", docs: [] },
+      { id: "7.1.1", interpretasi: `Prosedur pemeriksaan/inspeksi. Ada jadwal reguler kegiatan inspeksi. Dapat dilihat pada tabel jadwal atau prosedur inspeksi atau dari hasil laporan inspeksi yang telah dilakukan beberapa waktu sebelumnya. Inspeksi cara kerja dapat mengacu kepada job analysis dan inspeksi tempat kerja dapat mengacu kepada hasil identifikasi bahaya (Hazid).
+Bukti: Jadwal reguler kegiatan inspeksi, Form/checklist inspeksi tempat kerja dan peralatan kerja, Inspeksi cara kerja mengacu job analysis, Inspeksi tempat kerja mengacu Hazid.`, title: "Inspeksi tempat kerja & cara kerja dilaksanakan secara teratur", docs: [] },
+      { id: "7.2.1", interpretasi: `Pemantauan/pengukuran lingkungan kerja. Adanya dokumentasi/laporan hasil pemantauan lingkungan kerja. Interval waktu pelaksanaannya disesuaikan dengan ketentuan/standar yang berlaku.
+Bukti: Dilakukan pemantauan/monitoring lingkungan kerja, Jenis pemantauan, Dokumentasi/rekaman laporan hasil pemantauan lingkungan kerja, Interval waktu pelaksanaannya sesuai ketentuan/standar yang berlaku.`, title: "Pemantauan lingkungan kerja teratur & terdokumentasi", docs: [] },
+      { id: "7.2.2", interpretasi: `Ruang lingkup pemantauan/pengukuran: faktor fisik, kimia, biologis, radiasi dan psikologis. Lihat laporan hasil pemantauan/monitoring lingkungan kerja. Faktor fisik dan Faktor kimia mengacu pada Permenaker No.Per.13/MEN/X/2011 tentang NAB Faktor Fisika dan Faktor Kimia di Tempat Kerja, Kepmenaker No.Kep.187/MEN/1999 tentang Pengendalian Bahan Kimia Berbahaya di Tempat Kerja, PMP No.7/1964 tentang Penerangan/cahaya, ventilasi, jarak peralatan kerja dan cubic space.`, title: "Pemantauan mencakup faktor fisik, kimia, biologis, radiasi & psikologis", docs: [] },
+      { id: "7.2.3", interpretasi: `Petugas atau pihak yang berkompeten.
+Bukti: Bukti kompetensi petugas atau pihak yang berkompeten dan berwenang dari dalam dan/atau luar perusahaan. Ref: SE Dirjen BINWASNAKER No.SE-01/DJPPK/2011.`, title: "Pemantauan lingkungan oleh petugas kompeten & berwenang", docs: [] },
+      { id: "7.4.1", interpretasi: `Pemantauan kesehatan tenaga kerja. Ada kegiatan dan dokumentasinya (daftar, jadwal, SOP, rekaman pemeriksaan kesehatan) mengenai kegiatan pemantauan kesehatan tenaga kerja, terutama pemeriksaan kesehatan khusus seperti pengecekan darah untuk melihat kontaminasi kadar bahan kimia, audiometri untuk kebisingan, rontgen untuk penyakit saluran pernafasan, dll.
+Bukti: Daftar pekerjaan dengan potensi bahaya tinggi (ref. manajemen risiko), Dilakukan pemantauan kesehatan TK yang bekerja pada tempat kerja yang mengandung bahaya tinggi sesuai peraturan perundang-undangan, Kegiatan dan dokumentasinya (daftar, jadwal, SOP, rekaman pemeriksaan kesehatan), Pemeriksaan kesehatan khusus (pengecekan darah, audiometri, rontgen, dll).`, title: "Pemantauan kesehatan TK di area bahaya tinggi sesuai peraturan", docs: [] },
+      { id: "7.4.3", interpretasi: `Dokter pemeriksa yang ditunjuk. Pemeriksaan kesehatan tenaga kerja dilakukan oleh dokter perusahaan yang sesuai dengan ketentuan Permenaker No.Per.01/MEN/1976 tentang Kewajiban Latihan Hyperkes Bagi Dokter Perusahaan dan mendapatkan surat penunjukan dari Direktur Jenderal Pembinaan Pengawasan Ketenagakerjaan sebagaimana pasal 8 UU 1/1970 tentang Keselamatan Kerja.`, title: "Pemeriksaan kesehatan oleh dokter pemeriksa yang ditunjuk", docs: [] },
+      { id: "7.4.4", interpretasi: `Pelayanan kesehatan kerja. Detail pelayanan kesehatan yang diberikan mengacu pada Permenaker No.Per.03/MEN/1982.
+Pelayanan kesehatan tenaga kerja: dilakukan sendiri (poliklinik perusahaan) atau jasa pihak ke III.`, title: "Pelayanan kesehatan kerja tersedia sesuai peraturan", docs: [] },
+      { id: "7.4.5", interpretasi: `Catatan mengenai pemantauan kesehatan tenaga kerja. Diwajibkan untuk memberikan pelaporan setiap aktifitas pemeriksaan kesehatan tenaga kerja (rekap medis) yang mengacu pada Permenaker No.Per.02/MEN/1980.
+Bukti: Laporan pemeriksaan kesehatan tenaga kerja (rekap medis) yang mengacu pada Permenaker No.Per.02/MEN/1980.`, title: "Catatan pemantauan kesehatan TK sesuai peraturan (rekap medis)", docs: [] },
+      { id: "8.3.1", interpretasi: `Prosedur pemeriksaan dan pengkajian kecelakaan kerja dan penyakit akibat kerja. Dokumen sama dengan 8.2.1 dimana dapat disajikan satu prosedur yaitu pelaporan dan penyelidikan.
+Bukti: Prosedur pemeriksaan dan pelaporan kecelakaan dan PAK, Formulir/checklist untuk pemeriksaan (ref. Permenaker No.PER.03/MEN/1998 untuk laporan kecelakaan dan Keppres tentang Diagnosa PAK untuk laporan Dokter Pemeriksa Kesehatan Tenaga Kerja).`, title: "Prosedur pemeriksaan & pengkajian kecelakaan kerja dan PAK", docs: [] },
     ],
   },
   {
@@ -116,11 +171,14 @@ const PHASES = [
     colorLight: "#FAECE7",
     target: "Bulan 7–10",
     criteria: [
-      { id: "1.3.3", title: "Tinjauan ulang pelaksanaan SMK3 secara berkala setelah audit", docs: [] },
-      { id: "12.2.1", title: "Manajemen eksekutif berperan dalam pelatihan K3 & kewajiban hukum", docs: [] },
-      { id: "12.2.2", title: "Manajer & penyelia menerima pelatihan sesuai peran & tanggung jawab", docs: [] },
-      { id: "12.3.1", title: "Pelatihan K3 untuk semua TK termasuk TK baru & yang dipindahkan", docs: [] },
-      { id: "12.5.1", title: "Sistem jaminan kepatuhan lisensi & kualifikasi (Ahli K3, operator, dll.)", docs: [] },
+      { id: "1.3.3", interpretasi: `Tinjauan berkala pelaksanaan SMK3. Peninjauan ulang pelaksanaan SMK3 secara berkala dilakukan setelah audit internal dan dilaporkan adanya temuan ketidaksesuaian terhadap kriteria audit.
+Bukti: Jadwal tinjauan berkala, Jadwal audit internal, Hasil audit internal.`, title: "Tinjauan ulang pelaksanaan SMK3 secara berkala setelah audit", docs: [] },
+      { id: "12.2.1", interpretasi: `Anggota manajemen eksekutif dan pengurus berperan serta dalam pelatihan. Manajemen senior terlibat dalam kegiatan pelatihan K3. Terlibat disini termasuk ikut serta dalam pelatihan, minimal pelatihan tentang penjelasan tentang kewajiban hukum dan prinsip-prinsip serta pelaksanaan K3. Dokumen yang dilihat yaitu catatan pelatihan, sertifikat (jika ada) atau kegiatan yang diikuti seperti seminar, dll.`, title: "Manajemen eksekutif berperan dalam pelatihan K3 & kewajiban hukum", docs: [] },
+      { id: "12.2.2", interpretasi: `Manajer dan penyelia menerima pelatihan. Pelatihan disini bukan hanya pelatihan K3 yang sesuai dengan peran dan tugasnya namun juga yang berhubungan dengan kompetensi pekerjaannya. Kesesuaiannya dapat dilihat dari job qualification dan atau matriks pelatihan mereka.
+Bukti penerapannya dapat dilihat pada rekaman pelatihan dan sertifikat atau daftar riwayat pelatihan.`, title: "Manajer & penyelia menerima pelatihan sesuai peran & tanggung jawab", docs: [] },
+      { id: "12.3.1", interpretasi: `Pelatihan diberikan kepada semua tenaga kerja. Setiap tenaga kerja baru mendapatkan pelatihan bagaimana bekerja dengan aman termasuk pengenalan mengenai K3, begitu pula dengan tenaga kerja yang dipindahkan ke bagian yang baru. Lihat pada prosedur pelatihan dan catatan pelatihan.`, title: "Pelatihan K3 untuk semua TK termasuk TK baru & yang dipindahkan", docs: [] },
+      { id: "12.5.1", interpretasi: `Sistem untuk menjamin kepatuhan terhadap persyaratan lisensi atau kualifikasi. Perusahaan melakukan identifikasi terhadap kebutuhan pelatihan yang memang dipersyaratkan dalam peraturan perundangan. Lihat pada TNA atau matriks pelatihan yang ada.
+Pelatihan yang dipersyaratkan: Ahli K3 Umum (Permenaker No.Per.02/MEN/1992), Dokter perusahaan (Permenaker No.Per.01/MEN/1976), Paramedis (Permenaker No.Per.01/MEN/1979), Juru las (Permenaker No.Per.02/MEN/1982), Operator ketel uap (Permenaker No.Per.01/MEN/1988), Regu kebakaran (Kepmenaker No.Kep.186/MEN/1999), Ahli K3 Kimia dan Petugas K3 Kimia (Kepmenaker No.Kep.187/MEN/1999), Petugas P3K (Permenakertrans No.Per.15/VII/2008), Operator Pesawat Angkat-angkut (Permenakertrans No.Per.09/VII/MEN/2010).`, title: "Sistem jaminan kepatuhan lisensi & kualifikasi (Ahli K3, operator, dll.)", docs: [] },
     ],
   },
 ];
@@ -590,10 +648,21 @@ function CriteriaModal({ open, onClose, criteriaId, data, onSave, isAdmin, users
 
   return (
     <Modal open={open} onClose={onClose} title={`[${criteriaId}] Detail Kriteria`} width={620}>
-      <div style={{ marginBottom: 14, padding: 12, background: phase?.colorLight, borderRadius: 8, borderLeft: `3px solid ${phase?.color}` }}>
+      <div style={{ marginBottom: 12, padding: 12, background: phase?.colorLight, borderRadius: 8, borderLeft: `3px solid ${phase?.color}` }}>
         <div style={{ fontSize: 11, fontWeight: 600, color: phase?.color, marginBottom: 3 }}>Fase {phase?.id}: {phase?.title}</div>
         <div style={{ fontSize: 13, color: "#3d3d3a", lineHeight: 1.5 }}>{criteria.title}</div>
       </div>
+
+      {criteria.interpretasi && (
+        <div style={{ marginBottom: 14, padding: "12px 14px", background: "#f7f6f2", borderRadius: 8, border: "1px solid #e8e8e4" }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: "#555", marginBottom: 7, textTransform: "uppercase", letterSpacing: "0.4px", display: "flex", alignItems: "center", gap: 5 }}>
+            <span>📋</span> Interpretasi &amp; Panduan Audit
+          </div>
+          <p style={{ fontSize: 12, color: "#3d3d3a", lineHeight: 1.8, margin: 0, whiteSpace: "pre-line" }}>
+            {criteria.interpretasi}
+          </p>
+        </div>
+      )}
 
       {isAdmin ? (
         <>

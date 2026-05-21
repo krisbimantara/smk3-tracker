@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Expand-Archive -Path \"C:\\\\Users\\\\yusuf\\\\Downloads\\\\smk3-tracker-v2.zip\" -DestinationPath \"C:\\\\Users\\\\yusuf\\\\Downloads\\\\smk3-tracker-v2\" -Force; Get-ChildItem -Recurse \"C:\\\\Users\\\\yusuf\\\\Downloads\\\\smk3-tracker-v2\" | Where-Object { $_.Name -eq \"App.jsx\" })",
+      "PowerShell(Copy-Item -Path \"C:\\\\Users\\\\yusuf\\\\Downloads\\\\smk3-tracker-v2\\\\smk3-app-zip\\\\src\\\\App.jsx\" -Destination \"C:\\\\Users\\\\yusuf\\\\Documents\\\\0xstauffenberg-local\\\\smk3-tracker\\\\src\\\\App.jsx\" -Force; Write-Output \"Done. File size: $\\(\\(Get-Item 'C:\\\\Users\\\\yusuf\\\\Documents\\\\0xstauffenberg-local\\\\smk3-tracker\\\\src\\\\App.jsx'\\).Length\\) bytes\")"
+    ]
+  }
+}
