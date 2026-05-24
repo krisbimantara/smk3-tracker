@@ -192,7 +192,7 @@ const STATUS_CONFIG = {
 
 const INITIAL_USERS = [];
 
-const COMPANY_NAME = "PT. [Nama Shipyard]";
+const COMPANY_NAME = "BIMA Shipyard";
 
 // ─────────────────────────────────────────────
 // ICONS (Lucide-style inline SVG)
@@ -340,6 +340,7 @@ function LoginPage({ onLogin }) {
       return;
     }
     // Ambil role dari tabel profiles
+    // Gunakan data.session untuk pastikan JWT sudah aktif sebelum query
     const { data: profile } = await supabase
       .from('profiles')
       .select('name, role')
@@ -376,11 +377,6 @@ function LoginPage({ onLogin }) {
           {err && <div style={{ background: "#fcebeb", color: "#a32d2d", borderRadius: 8, padding: "9px 12px", fontSize: 13, marginBottom: 14 }}>{err}</div>}
           <Btn style={{ width: "100%" }} size="lg" disabled={loading}>{loading ? 'Memuat...' : 'Masuk'}</Btn>
         </form>
-        <div style={{ marginTop: 24, padding: 14, background: "#f7f6f2", borderRadius: 10, fontSize: 12, color: "#888" }}>
-          <div style={{ fontWeight: 600, marginBottom: 4, color: "#555" }}>Demo akun:</div>
-          <div>Admin: admin@shipyard.com / admin123</div>
-          <div>Viewer: viewer@shipyard.com / viewer123</div>
-        </div>
       </div>
     </div>
   );
@@ -1023,8 +1019,8 @@ function ReportPage({ data }) {
   const printReport = () => window.print();
 
   return (
-    <div style={{ padding: "32px 36px", flex: 1, overflowY: "auto" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 28 }}>
+    <div className="report-page" style={{ padding: "32px 36px", flex: 1, overflowY: "auto" }}>
+      <div className="no-print" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 28 }}>
         <div>
           <h1 style={{ fontSize: 24, fontWeight: 800, color: "#1a1a1a", margin: 0 }}>Laporan Implementasi SMK3</h1>
           <p style={{ fontSize: 13, color: "#888", margin: "4px 0 0" }}>Per tanggal {today}</p>
@@ -1032,109 +1028,122 @@ function ReportPage({ data }) {
         <Btn onClick={printReport}><Icon name="download" size={14} /> Cetak / Export PDF</Btn>
       </div>
 
-      {/* Header report */}
-      <div style={{ background: "#1a1a2e", borderRadius: 14, padding: "24px 28px", marginBottom: 20, color: "#fff" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div>
-            <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 2 }}>Status Implementasi SMK3</div>
-            <div style={{ fontSize: 13, color: "rgba(255,255,255,.55)" }}>{COMPANY_NAME} · Berdasarkan PP No.50 Tahun 2012</div>
-          </div>
-          <RingProgress value={pct} size={90} stroke={8} color="#5DCAA5" bg="rgba(255,255,255,.15)" />
-        </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginTop: 20 }}>
-          {[
-            { label: "Selesai", val: selesai, color: "#5DCAA5" },
-            { label: "Sedang berjalan", val: proses, color: "#FAC775" },
-            { label: "Belum mulai", val: belum, color: "#F09595" },
-          ].map(s => (
-            <div key={s.label} style={{ background: "rgba(255,255,255,.07)", borderRadius: 10, padding: "14px 16px" }}>
-              <div style={{ fontSize: 28, fontWeight: 800, color: s.color }}>{s.val}</div>
-              <div style={{ fontSize: 12, color: "rgba(255,255,255,.55)", marginTop: 2 }}>{s.label}</div>
+      {/* Print-only header */}
+      <div className="print-only" style={{ display: "none", marginBottom: 20, textAlign: "center" }}>
+        <div style={{ fontSize: 20, fontWeight: 800, color: "#1a1a1a" }}>Laporan Implementasi SMK3</div>
+        <div style={{ fontSize: 13, color: "#888", marginTop: 4 }}>{COMPANY_NAME} · Per tanggal {today}</div>
+      </div>
+
+      <div className="report-content">
+        {/* Header report */}
+        <div style={{ background: "#1a1a2e", borderRadius: 14, padding: "24px 28px", marginBottom: 20, color: "#fff" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div>
+              <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 2 }}>Status Implementasi SMK3</div>
+              <div style={{ fontSize: 13, color: "rgba(255,255,255,.55)" }}>{COMPANY_NAME} · Berdasarkan PP No.50 Tahun 2012</div>
             </div>
-          ))}
+            <RingProgress value={pct} size={90} stroke={8} color="#5DCAA5" bg="rgba(255,255,255,.15)" />
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16, marginTop: 20 }}>
+            {[
+              { label: "Selesai", val: selesai, color: "#5DCAA5" },
+              { label: "Sedang berjalan", val: proses, color: "#FAC775" },
+              { label: "Belum mulai", val: belum, color: "#F09595" },
+            ].map(s => (
+              <div key={s.label} style={{ background: "rgba(255,255,255,.07)", borderRadius: 10, padding: "14px 16px" }}>
+                <div style={{ fontSize: 28, fontWeight: 800, color: s.color }}>{s.val}</div>
+                <div style={{ fontSize: 12, color: "rgba(255,255,255,.55)", marginTop: 2 }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* Per-phase table */}
-      <div style={{ background: "#fff", border: "1.5px solid #f0f0ee", borderRadius: 14, overflow: "hidden", marginBottom: 20 }}>
-        <div style={{ padding: "16px 20px", borderBottom: "1px solid #f0f0ee", fontWeight: 700, fontSize: 14 }}>Ringkasan per fase</div>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
-          <thead>
-            <tr style={{ background: "#f7f6f2" }}>
-              {["Fase", "Target", "Total", "Selesai", "Proses", "Belum", "Progress"].map(h => (
-                <th key={h} style={{ padding: "10px 14px", textAlign: h === "Fase" ? "left" : "center", fontSize: 11, fontWeight: 700, color: "#888", borderBottom: "1px solid #f0f0ee" }}>{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {PHASES.map(ph => {
-              const tot = ph.criteria.length;
-              const don = ph.criteria.filter(c => data[c.id]?.status === "selesai").length;
-              const inp = ph.criteria.filter(c => data[c.id]?.status === "proses").length;
-              const bel = tot - don - inp;
-              const pp = Math.round((don / tot) * 100);
-              return (
-                <tr key={ph.id} style={{ borderBottom: "1px solid #f7f6f2" }}>
-                  <td style={{ padding: "12px 14px" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <div style={{ width: 22, height: 22, borderRadius: 6, background: ph.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 800, color: "#fff" }}>{ph.id}</div>
-                      <div>
-                        <div style={{ fontWeight: 600, color: "#1a1a1a" }}>{ph.title}</div>
-                        <div style={{ fontSize: 11, color: "#888" }}>{ph.subtitle}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td style={{ textAlign: "center", color: "#888", fontSize: 12 }}>{ph.target}</td>
-                  <td style={{ textAlign: "center", fontWeight: 700 }}>{tot}</td>
-                  <td style={{ textAlign: "center", color: "#27500A", fontWeight: 600 }}>{don}</td>
-                  <td style={{ textAlign: "center", color: "#854F0B", fontWeight: 600 }}>{inp}</td>
-                  <td style={{ textAlign: "center", color: "#888" }}>{bel}</td>
-                  <td style={{ padding: "12px 14px" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <div style={{ flex: 1, height: 6, background: "#f1efe8", borderRadius: 10, overflow: "hidden" }}>
-                        <div style={{ width: `${pp}%`, height: "100%", background: ph.color, borderRadius: 10 }} />
-                      </div>
-                      <span style={{ fontSize: 12, fontWeight: 700, color: ph.color, minWidth: 30 }}>{pp}%</span>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Full criteria list */}
-      <div style={{ background: "#fff", border: "1.5px solid #f0f0ee", borderRadius: 14, overflow: "hidden" }}>
-        <div style={{ padding: "16px 20px", borderBottom: "1px solid #f0f0ee", fontWeight: 700, fontSize: 14 }}>Detail semua kriteria</div>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
-          <thead>
-            <tr style={{ background: "#f7f6f2" }}>
-              {["No.", "Kriteria", "PIC", "Deadline", "Dok.", "Status"].map(h => (
-                <th key={h} style={{ padding: "9px 12px", textAlign: "left", fontSize: 11, fontWeight: 700, color: "#888", borderBottom: "1px solid #f0f0ee" }}>{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {PHASES.flatMap(ph =>
-              ph.criteria.map((cr, i) => {
-                const d = data[cr.id] || {};
+        {/* Per-phase table */}
+        <div style={{ background: "#fff", border: "1.5px solid #f0f0ee", borderRadius: 14, overflow: "hidden", marginBottom: 20 }}>
+          <div style={{ padding: "16px 20px", borderBottom: "1px solid #f0f0ee", fontWeight: 700, fontSize: 14 }}>Ringkasan per fase</div>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+            <thead>
+              <tr style={{ background: "#f7f6f2" }}>
+                {["Fase", "Target", "Total", "Selesai", "Proses", "Belum", "Progress"].map(h => (
+                  <th key={h} style={{ padding: "10px 14px", textAlign: h === "Fase" ? "left" : "center", fontSize: 11, fontWeight: 700, color: "#888", borderBottom: "1px solid #f0f0ee" }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {PHASES.map(ph => {
+                const tot = ph.criteria.length;
+                const don = ph.criteria.filter(c => data[c.id]?.status === "selesai").length;
+                const inp = ph.criteria.filter(c => data[c.id]?.status === "proses").length;
+                const bel = tot - don - inp;
+                const pp = Math.round((don / tot) * 100);
                 return (
-                  <tr key={cr.id} style={{ borderBottom: "1px solid #f7f6f2", background: i % 2 === 0 ? "#fff" : "#fafaf8" }}>
-                    <td style={{ padding: "8px 12px", fontWeight: 700, color: ph.color }}>{cr.id}</td>
-                    <td style={{ padding: "8px 12px", color: "#3d3d3a", maxWidth: 300 }}>{cr.title}</td>
-                    <td style={{ padding: "8px 12px", color: "#888" }}>{d.pic || "—"}</td>
-                    <td style={{ padding: "8px 12px", color: d.deadline && new Date(d.deadline) < new Date() && d.status !== "selesai" ? "#A32D2D" : "#888" }}>
-                      {d.deadline ? new Date(d.deadline).toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "2-digit" }) : "—"}
+                  <tr key={ph.id} style={{ borderBottom: "1px solid #f7f6f2" }}>
+                    <td style={{ padding: "12px 14px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <div style={{ width: 22, height: 22, borderRadius: 6, background: ph.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 800, color: "#fff" }}>{ph.id}</div>
+                        <div>
+                          <div style={{ fontWeight: 600, color: "#1a1a1a" }}>{ph.title}</div>
+                          <div style={{ fontSize: 11, color: "#888" }}>{ph.subtitle}</div>
+                        </div>
+                      </div>
                     </td>
-                    <td style={{ padding: "8px 12px", color: "#185FA5" }}>{(d.docs || []).length || "—"}</td>
-                    <td style={{ padding: "8px 12px" }}><Badge status={d.status || "belum"} /></td>
+                    <td style={{ textAlign: "center", color: "#888", fontSize: 12 }}>{ph.target}</td>
+                    <td style={{ textAlign: "center", fontWeight: 700 }}>{tot}</td>
+                    <td style={{ textAlign: "center", color: "#27500A", fontWeight: 600 }}>{don}</td>
+                    <td style={{ textAlign: "center", color: "#854F0B", fontWeight: 600 }}>{inp}</td>
+                    <td style={{ textAlign: "center", color: "#888" }}>{bel}</td>
+                    <td style={{ padding: "12px 14px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <div style={{ flex: 1, height: 6, background: "#f1efe8", borderRadius: 10, overflow: "hidden" }}>
+                          <div style={{ width: `${pp}%`, height: "100%", background: ph.color, borderRadius: 10 }} />
+                        </div>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: ph.color, minWidth: 30 }}>{pp}%</span>
+                      </div>
+                    </td>
                   </tr>
                 );
-              })
-            )}
-          </tbody>
-        </table>
+              })}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Full criteria list */}
+        <div style={{ background: "#fff", border: "1.5px solid #f0f0ee", borderRadius: 14, overflow: "hidden" }}>
+          <div style={{ padding: "16px 20px", borderBottom: "1px solid #f0f0ee", fontWeight: 700, fontSize: 14 }}>Detail semua kriteria</div>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+            <thead>
+              <tr style={{ background: "#f7f6f2" }}>
+                {["No.", "Kriteria", "Catatan", "Interpretasi & Panduan Audit", "Status"].map(h => (
+                  <th key={h} style={{
+                    padding: "9px 12px",
+                    textAlign: "left",
+                    fontSize: 11,
+                    fontWeight: 700,
+                    color: "#888",
+                    borderBottom: "1px solid #f0f0ee",
+                    width: h === "No." ? "5%" : h === "Kriteria" ? "20%" : h === "Catatan" ? "18%" : h === "Interpretasi & Panduan Audit" ? "42%" : "10%",
+                  }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {PHASES.flatMap(ph =>
+                ph.criteria.map((cr, i) => {
+                  const d = data[cr.id] || {};
+                  return (
+                    <tr key={cr.id} style={{ borderBottom: "1px solid #f7f6f2", background: i % 2 === 0 ? "#fff" : "#fafaf8" }}>
+                      <td style={{ padding: "8px 12px", fontWeight: 700, color: ph.color, whiteSpace: "nowrap" }}>{cr.id}</td>
+                      <td style={{ padding: "8px 12px", color: "#3d3d3a" }}>{cr.title}</td>
+                      <td style={{ padding: "8px 12px", color: "#555" }}>{d.notes || "—"}</td>
+                      <td style={{ padding: "8px 12px", color: "#555", fontSize: 11, lineHeight: 1.6, whiteSpace: "pre-line" }}>{cr.interpretasi || "—"}</td>
+                      <td style={{ padding: "8px 12px" }}><Badge status={d.status || "belum"} /></td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
@@ -1266,35 +1275,22 @@ export default function App() {
   const [data, setData] = useState({});
   const [dataLoading, setDataLoading] = useState(true);
 
-  // Helper: fetch profile dan set user state
-  const fetchAndSetUser = async (authUser) => {
-    const { data: profile, error } = await supabase
-      .from('profiles')
-      .select('name, role')
-      .eq('id', authUser.id)
-      .single();
-    if (error) console.error('Gagal fetch profile:', error);
-    const role = profile?.role || 'viewer';
-    const name = profile?.name || authUser.email;
-    setUser({ ...authUser, name, role });
-    return role;
-  };
-
   // Cek session saat app dibuka & listen perubahan auth
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (session) {
-        await fetchAndSetUser(session.user);
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('name, role')
+          .eq('id', session.user.id)
+          .single();
+        setUser({ ...session.user, name: profile?.name || session.user.email, role: profile?.role || 'viewer' });
       }
       setAuthLoading(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_OUT') {
-        setUser(null);
-        setData({});
-        setDataLoading(true);
-      }
+      if (event === 'SIGNED_OUT') { setUser(null); setData({}); setDataLoading(true); }
     });
 
     return () => subscription.unsubscribe();
@@ -1325,10 +1321,7 @@ export default function App() {
     fetchData();
   }, [user]);
 
-  const handleLogin = async (u) => {
-    // Re-fetch profile untuk pastikan role terbaru dari DB
-    await fetchAndSetUser(u);
-  };
+  const handleLogin = (u) => { setUser(u); };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -1369,8 +1362,10 @@ export default function App() {
 
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: "#f7f6f2", fontFamily: "'Plus Jakarta Sans', 'Segoe UI', sans-serif" }}>
-      <Sidebar page={page} setPage={setPage} user={user} onLogout={handleLogout} />
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+      <div className="no-print" style={{ display: "contents" }}>
+        <Sidebar page={page} setPage={setPage} user={user} onLogout={handleLogout} />
+      </div>
+      <div className="app-main" style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
         {dataLoading ? (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1, color: '#888', fontSize: 14 }}>Memuat data...</div>
         ) : (

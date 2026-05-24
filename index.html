@@ -6,7 +6,69 @@
     <title>SMK3 Tracker — PP 50/2012</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Plus Jakarta Sans','Segoe UI',sans-serif}</style>
+    <style>
+      *{box-sizing:border-box;margin:0;padding:0}
+      body{font-family:'Plus Jakarta Sans','Segoe UI',sans-serif}
+      input::-ms-reveal,input::-ms-clear{display:none}
+      input::-webkit-credentials-auto-fill-button{display:none}
+
+      @media print {
+        html, body {
+          overflow: visible !important;
+          height: auto !important;
+          background: #fff !important;
+        }
+
+        /* Sembunyikan sidebar dan elemen bertanda no-print */
+        .no-print { display: none !important; }
+
+        /* Area konten utama: lepas dari flex constraint */
+        .app-main {
+          overflow: visible !important;
+          display: block !important;
+          width: 100% !important;
+          flex: none !important;
+        }
+
+        /* Sembunyikan semua halaman kecuali laporan */
+        .app-main > *:not(.report-page) { display: none !important; }
+
+        /* Report page */
+        .report-page {
+          overflow: visible !important;
+          display: block !important;
+          padding: 0 !important;
+          width: 100% !important;
+          flex: none !important;
+        }
+
+        /* Tampilkan header print-only */
+        .print-only { display: block !important; }
+
+        /* Konten di-center */
+        .report-content {
+          overflow: visible !important;
+          max-width: 900px;
+          margin: 0 auto;
+        }
+
+        /* Tabel tidak terpotong antar halaman */
+        tr { page-break-inside: avoid; }
+        thead { display: table-header-group; }
+
+        /* A4 landscape */
+        @page {
+          size: A4 landscape;
+          margin: 15mm 12mm;
+        }
+
+        /* Paksa warna background tercetak */
+        * {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
