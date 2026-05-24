@@ -1110,7 +1110,7 @@ function ReportPage({ data }) {
         {/* Full criteria list */}
         <div style={{ background: "#fff", border: "1.5px solid #f0f0ee", borderRadius: 14, overflow: "hidden" }}>
           <div style={{ padding: "16px 20px", borderBottom: "1px solid #f0f0ee", fontWeight: 700, fontSize: 14 }}>Detail semua kriteria</div>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, tableLayout: "fixed" }}>
             <thead>
               <tr style={{ background: "#f7f6f2" }}>
                 {["No.", "Kriteria", "Catatan", "Interpretasi & Panduan Audit", "Status"].map(h => (
@@ -1133,9 +1133,9 @@ function ReportPage({ data }) {
                   return (
                     <tr key={cr.id} style={{ borderBottom: "1px solid #f7f6f2", background: i % 2 === 0 ? "#fff" : "#fafaf8" }}>
                       <td style={{ padding: "8px 12px", fontWeight: 700, color: ph.color, whiteSpace: "nowrap" }}>{cr.id}</td>
-                      <td style={{ padding: "8px 12px", color: "#3d3d3a" }}>{cr.title}</td>
-                      <td style={{ padding: "8px 12px", color: "#555" }}>{d.notes || "—"}</td>
-                      <td style={{ padding: "8px 12px", color: "#555", fontSize: 11, lineHeight: 1.6, whiteSpace: "pre-line" }}>{cr.interpretasi || "—"}</td>
+                      <td style={{ padding: "8px 12px", color: "#3d3d3a", wordWrap: "break-word" }}>{cr.title}</td>
+                      <td style={{ padding: "8px 12px", color: "#555", wordWrap: "break-word" }}>{d.notes || "—"}</td>
+                      <td style={{ padding: "8px 12px", color: "#555", fontSize: 11, lineHeight: 1.6, whiteSpace: "pre-line", wordWrap: "break-word" }}>{cr.interpretasi || "—"}</td>
                       <td style={{ padding: "8px 12px" }}><Badge status={d.status || "belum"} /></td>
                     </tr>
                   );
