@@ -1266,22 +1266,35 @@ export default function App() {
   const [data, setData] = useState({});
   const [dataLoading, setDataLoading] = useState(true);
 
+  // Helper: fetch profile dan set user state
+  const fetchAndSetUser = async (authUser) => {
+    const { data: profile, error } = await supabase
+      .from('profiles')
+      .select('name, role')
+      .eq('id', authUser.id)
+      .single();
+    if (error) console.error('Gagal fetch profile:', error);
+    const role = profile?.role || 'viewer';
+    const name = profile?.name || authUser.email;
+    setUser({ ...authUser, name, role });
+    return role;
+  };
+
   // Cek session saat app dibuka & listen perubahan auth
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (session) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('name, role')
-          .eq('id', session.user.id)
-          .single();
-        setUser({ ...session.user, name: profile?.name || session.user.email, role: profile?.role || 'viewer' });
+        await fetchAndSetUser(session.user);
       }
       setAuthLoading(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_OUT') { setUser(null); setData({}); setDataLoading(true); }
+      if (event === 'SIGNED_OUT') {
+        setUser(null);
+        setData({});
+        setDataLoading(true);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -1312,7 +1325,10 @@ export default function App() {
     fetchData();
   }, [user]);
 
-  const handleLogin = (u) => { setUser(u); };
+  const handleLogin = async (u) => {
+    // Re-fetch profile untuk pastikan role terbaru dari DB
+    await fetchAndSetUser(u);
+  };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
