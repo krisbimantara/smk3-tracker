@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from "react";
+import { supabase } from './lib/supabase';
 
 // ─────────────────────────────────────────────
 // DATA: 64 KRITERIA SMK3
@@ -189,64 +190,9 @@ const STATUS_CONFIG = {
   selesai: { label: "Selesai", color: "#27500A", bg: "#EAF3DE", border: "#97C459" },
 };
 
-const INITIAL_USERS = [
-  { id: "admin1", name: "Admin K3", email: "admin@shipyard.com", password: "admin123", role: "admin" },
-  { id: "viewer1", name: "Viewer", email: "viewer@shipyard.com", password: "viewer123", role: "viewer" },
-];
+const INITIAL_USERS = [];
 
 const COMPANY_NAME = "PT. [Nama Shipyard]";
-
-// ─────────────────────────────────────────────
-// STORAGE HELPERS
-// ─────────────────────────────────────────────
-const LS_KEY = "smk3_data_v1";
-const US_KEY = "smk3_users_v1";
-const SESSION_KEY = "smk3_session_v1";
-
-function loadData() {
-  try {
-    const raw = localStorage.getItem(LS_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch {}
-  // default: all criteria "belum", no notes, no docs, no pic, no deadline
-  const data = {};
-  PHASES.forEach(ph =>
-    ph.criteria.forEach(cr => {
-      data[cr.id] = { status: "belum", pic: "", deadline: "", notes: "", docs: [], updatedAt: null, updatedBy: "" };
-    })
-  );
-  return data;
-}
-
-function saveData(data) {
-  localStorage.setItem(LS_KEY, JSON.stringify(data));
-}
-
-function loadUsers() {
-  try {
-    const raw = localStorage.getItem(US_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch {}
-  localStorage.setItem(US_KEY, JSON.stringify(INITIAL_USERS));
-  return INITIAL_USERS;
-}
-
-function saveUsers(users) {
-  localStorage.setItem(US_KEY, JSON.stringify(users));
-}
-
-function loadSession() {
-  try {
-    const raw = sessionStorage.getItem(SESSION_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch {}
-  return null;
-}
-
-function saveSession(user) {
-  if (user) sessionStorage.setItem(SESSION_KEY, JSON.stringify(user));
-  else sessionStorage.removeItem(SESSION_KEY);
-}
 
 // ─────────────────────────────────────────────
 // ICONS (Lucide-style inline SVG)
@@ -381,13 +327,26 @@ function LoginPage({ onLogin }) {
   const [password, setPassword] = useState("");
   const [err, setErr] = useState("");
   const [showPass, setShowPass] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handle = (e) => {
+  const handle = async (e) => {
     e.preventDefault();
-    const users = loadUsers();
-    const user = users.find(u => u.email === email && u.password === password);
-    if (user) { setErr(""); onLogin(user); }
-    else setErr("Email atau password salah.");
+    setLoading(true);
+    setErr("");
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      setErr("Email atau password salah.");
+      setLoading(false);
+      return;
+    }
+    // Ambil role dari tabel profiles
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('name, role')
+      .eq('id', data.user.id)
+      .single();
+    onLogin({ ...data.user, name: profile?.name || data.user.email, role: profile?.role || 'viewer' });
+    setLoading(false);
   };
 
   return (
@@ -415,7 +374,7 @@ function LoginPage({ onLogin }) {
             </button>
           </div>
           {err && <div style={{ background: "#fcebeb", color: "#a32d2d", borderRadius: 8, padding: "9px 12px", fontSize: 13, marginBottom: 14 }}>{err}</div>}
-          <Btn style={{ width: "100%" }} size="lg">Masuk</Btn>
+          <Btn style={{ width: "100%" }} size="lg" disabled={loading}>{loading ? 'Memuat...' : 'Masuk'}</Btn>
         </form>
         <div style={{ marginTop: 24, padding: 14, background: "#f7f6f2", borderRadius: 10, fontSize: 12, color: "#888" }}>
           <div style={{ fontWeight: 600, marginBottom: 4, color: "#555" }}>Demo akun:</div>
@@ -613,34 +572,105 @@ function DashboardPage({ data, setPage }) {
 // ─────────────────────────────────────────────
 // CRITERIA DETAIL MODAL
 // ─────────────────────────────────────────────
-function CriteriaModal({ open, onClose, criteriaId, data, onSave, isAdmin, users }) {
+function CriteriaModal({ open, onClose, criteriaId, data, onSave, isAdmin, user }) {
   const phase = PHASES.find(p => p.criteria.some(c => c.id === criteriaId));
   const criteria = phase?.criteria.find(c => c.id === criteriaId);
   const entry = data[criteriaId] || { status: "belum", pic: "", deadline: "", notes: "", docs: [] };
 
   const [form, setForm] = useState({ ...entry });
+  const [uploading, setUploading] = useState(false);
   const fileRef = useRef();
 
   useEffect(() => {
     if (open) setForm({ ...entry });
   }, [open, criteriaId]);
 
-  const handleFile = (e) => {
+  // Fetch dokumen dari tabel documents saat modal dibuka
+  useEffect(() => {
+    if (!open || !criteriaId) return;
+    const fetchDocs = async () => {
+      const { data: docs } = await supabase
+        .from('documents')
+        .select('*')
+        .eq('criteria_id', criteriaId)
+        .order('uploaded_at', { ascending: false });
+      setForm(prev => ({ ...prev, docs: docs || [] }));
+    };
+    fetchDocs();
+  }, [open, criteriaId]);
+
+  const handleFile = async (e) => {
     const files = Array.from(e.target.files);
-    files.forEach(f => {
-      const reader = new FileReader();
-      reader.onload = ev => {
-        setForm(prev => ({
-          ...prev,
-          docs: [...(prev.docs || []), { name: f.name, size: f.size, type: f.type, data: ev.target.result, uploadedAt: new Date().toISOString() }]
-        }));
-      };
-      reader.readAsDataURL(f);
-    });
+    setUploading(true);
+    for (const f of files) {
+      const filePath = `${criteriaId}/${Date.now()}_${f.name}`;
+
+      // 1. Upload file ke Supabase Storage
+      const { error: uploadError } = await supabase.storage
+        .from('smk3-documents')
+        .upload(filePath, f);
+
+      if (uploadError) {
+        console.error('Upload gagal:', uploadError);
+        continue;
+      }
+
+      // 2. Simpan metadata ke tabel documents
+      const { data: docRow, error: dbError } = await supabase
+        .from('documents')
+        .insert({
+          criteria_id: criteriaId,
+          file_name: f.name,
+          file_path: filePath,
+          file_size: f.size,
+          file_type: f.type,
+          uploaded_by: user?.name || '',
+        })
+        .select()
+        .single();
+
+      if (dbError) { console.error('Simpan metadata gagal:', dbError); continue; }
+
+      // 3. Update local state
+      setForm(prev => ({
+        ...prev,
+        docs: [
+          {
+            id: docRow.id,
+            file_name: docRow.file_name,
+            file_path: docRow.file_path,
+            file_size: docRow.file_size,
+            file_type: docRow.file_type,
+            uploaded_at: docRow.uploaded_at,
+            uploaded_by: docRow.uploaded_by,
+          },
+          ...(prev.docs || []),
+        ]
+      }));
+    }
+    setUploading(false);
     e.target.value = "";
   };
 
-  const removeDoc = (idx) => setForm(prev => ({ ...prev, docs: prev.docs.filter((_, i) => i !== idx) }));
+  const handleDownload = async (filePath, fileName) => {
+    const { data: signedData, error } = await supabase.storage
+      .from('smk3-documents')
+      .createSignedUrl(filePath, 60);
+    if (error) { console.error(error); return; }
+    const a = document.createElement('a');
+    a.href = signedData.signedUrl;
+    a.download = fileName;
+    a.click();
+  };
+
+  const removeDoc = async (docId, filePath, idx) => {
+    // 1. Hapus dari Storage
+    await supabase.storage.from('smk3-documents').remove([filePath]);
+    // 2. Hapus metadata dari tabel documents
+    await supabase.from('documents').delete().eq('id', docId);
+    // 3. Update local state
+    setForm(prev => ({ ...prev, docs: prev.docs.filter((_, i) => i !== idx) }));
+  };
 
   const save = () => { onSave(criteriaId, form); onClose(); };
 
@@ -690,18 +720,30 @@ function CriteriaModal({ open, onClose, criteriaId, data, onSave, isAdmin, users
       <div style={{ borderTop: "1px solid #f0f0ee", paddingTop: 14, marginTop: 4 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
           <label style={{ fontSize: 12, fontWeight: 600, color: "#555" }}>Dokumen Bukti ({(form.docs || []).length})</label>
-          {isAdmin && <Btn variant="secondary" size="sm" onClick={() => fileRef.current?.click()}><Icon name="upload" size={12} /> Upload</Btn>}
+          {isAdmin && (
+            <Btn variant="secondary" size="sm" onClick={() => fileRef.current?.click()} disabled={uploading}>
+              <Icon name="upload" size={12} /> {uploading ? 'Mengupload...' : 'Upload'}
+            </Btn>
+          )}
         </div>
         <input ref={fileRef} type="file" multiple style={{ display: "none" }} onChange={handleFile} />
         {(form.docs || []).length === 0 && <div style={{ fontSize: 12, color: "#aaa", textAlign: "center", padding: "16px 0" }}>Belum ada dokumen</div>}
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
           {(form.docs || []).map((doc, idx) => (
-            <div key={idx} style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", background: "#f7f6f2", borderRadius: 8 }}>
+            <div key={doc.id || idx} style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", background: "#f7f6f2", borderRadius: 8 }}>
               <Icon name="paperclip" size={13} color="#888" />
-              <span style={{ flex: 1, fontSize: 12, color: "#3d3d3a", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{doc.name}</span>
-              <span style={{ fontSize: 10, color: "#aaa" }}>{(doc.size / 1024).toFixed(0)} KB</span>
-              {doc.data && <a href={doc.data} download={doc.name} style={{ color: "#185FA5" }}><Icon name="download" size={13} /></a>}
-              {isAdmin && <button onClick={() => removeDoc(idx)} style={{ background: "none", border: "none", cursor: "pointer", color: "#aaa", padding: 2 }}><Icon name="trash" size={13} /></button>}
+              <span style={{ flex: 1, fontSize: 12, color: "#3d3d3a", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{doc.file_name}</span>
+              <span style={{ fontSize: 10, color: "#aaa" }}>{doc.file_size ? (doc.file_size / 1024).toFixed(0) + ' KB' : ''}</span>
+              {doc.file_path && (
+                <button onClick={() => handleDownload(doc.file_path, doc.file_name)} style={{ background: "none", border: "none", cursor: "pointer", color: "#185FA5", padding: 2 }}>
+                  <Icon name="download" size={13} color="#185FA5" />
+                </button>
+              )}
+              {isAdmin && (
+                <button onClick={() => removeDoc(doc.id, doc.file_path, idx)} style={{ background: "none", border: "none", cursor: "pointer", color: "#aaa", padding: 2 }}>
+                  <Icon name="trash" size={13} />
+                </button>
+              )}
             </div>
           ))}
         </div>
@@ -861,7 +903,7 @@ function TrackerPage({ data, onSave, isAdmin, user }) {
         open={!!selected} onClose={() => setSelected(null)}
         criteriaId={selected} data={data}
         onSave={(id, form) => onSave(id, { ...form, updatedAt: new Date().toISOString(), updatedBy: user.name })}
-        isAdmin={isAdmin} />
+        isAdmin={isAdmin} user={user} />
     </div>
   );
 }
@@ -888,15 +930,27 @@ function DocumentsPage({ data }) {
 
   const filtered = allDocs.filter(doc => {
     const matchPhase = filterPhase === "all" || String(doc.phaseId) === filterPhase;
-    const matchSearch = !search || doc.name.toLowerCase().includes(search.toLowerCase()) || doc.criteriaId.includes(search);
+    const matchSearch = !search || (doc.file_name || '').toLowerCase().includes(search.toLowerCase()) || doc.criteriaId.includes(search);
     return matchPhase && matchSearch;
   });
 
   const byType = (type) => {
+    if (!type) return "#888";
     if (type.includes("pdf")) return "#E24B4A";
     if (type.includes("image")) return "#185FA5";
     if (type.includes("word") || type.includes("document")) return "#0F6E56";
     return "#888";
+  };
+
+  const handleDownload = async (filePath, fileName) => {
+    const { data: signedData, error } = await supabase.storage
+      .from('smk3-documents')
+      .createSignedUrl(filePath, 60);
+    if (error) { console.error(error); return; }
+    const a = document.createElement('a');
+    a.href = signedData.signedUrl;
+    a.download = fileName;
+    a.click();
   };
 
   return (
@@ -928,21 +982,22 @@ function DocumentsPage({ data }) {
       ) : (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 12 }}>
           {filtered.map((doc, idx) => (
-            <div key={idx} style={{ background: "#fff", border: "1.5px solid #f0f0ee", borderRadius: 12, padding: "14px 16px", display: "flex", gap: 12, alignItems: "flex-start" }}>
-              <div style={{ width: 38, height: 38, borderRadius: 9, background: byType(doc.type) + "18", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                <Icon name="file" size={18} color={byType(doc.type)} />
+            <div key={doc.id || idx} style={{ background: "#fff", border: "1.5px solid #f0f0ee", borderRadius: 12, padding: "14px 16px", display: "flex", gap: 12, alignItems: "flex-start" }}>
+              <div style={{ width: 38, height: 38, borderRadius: 9, background: byType(doc.file_type) + "18", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <Icon name="file" size={18} color={byType(doc.file_type)} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 13, fontWeight: 600, color: "#1a1a1a", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{doc.name}</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "#1a1a1a", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{doc.file_name}</div>
                 <div style={{ fontSize: 11, color: "#888", marginTop: 2 }}>
                   <span style={{ color: doc.phaseColor, fontWeight: 600 }}>[{doc.criteriaId}]</span> {doc.criteriaTitle.substring(0, 40)}...
                 </div>
                 <div style={{ display: "flex", gap: 8, marginTop: 6, alignItems: "center" }}>
-                  <span style={{ fontSize: 10, color: "#aaa" }}>{(doc.size / 1024).toFixed(0)} KB</span>
-                  {doc.data && (
-                    <a href={doc.data} download={doc.name} style={{ fontSize: 11, color: "#185FA5", display: "flex", alignItems: "center", gap: 3 }}>
+                  <span style={{ fontSize: 10, color: "#aaa" }}>{doc.file_size ? (doc.file_size / 1024).toFixed(0) + ' KB' : ''}</span>
+                  {doc.file_path && (
+                    <button onClick={() => handleDownload(doc.file_path, doc.file_name)}
+                      style={{ fontSize: 11, color: "#185FA5", display: "flex", alignItems: "center", gap: 3, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
                       <Icon name="download" size={11} color="#185FA5" /> Unduh
-                    </a>
+                    </button>
                   )}
                 </div>
               </div>
@@ -1089,32 +1144,49 @@ function ReportPage({ data }) {
 // USERS PAGE (admin only)
 // ─────────────────────────────────────────────
 function UsersPage({ currentUser }) {
-  const [users, setUsersState] = useState(loadUsers);
+  const [users, setUsersState] = useState([]);
   const [modal, setModal] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", password: "", role: "viewer" });
+  const [form, setForm] = useState({ name: "", email: "", role: "viewer" });
   const [editId, setEditId] = useState(null);
+  const [loadingUsers, setLoadingUsers] = useState(true);
 
-  const openAdd = () => { setForm({ name: "", email: "", password: "", role: "viewer" }); setEditId(null); setModal(true); };
-  const openEdit = (u) => { setForm({ name: u.name, email: u.email, password: u.password, role: u.role }); setEditId(u.id); setModal(true); };
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const { data, error } = await supabase.from('profiles').select('*').order('created_at');
+      if (!error) setUsersState(data || []);
+      setLoadingUsers(false);
+    };
+    fetchUsers();
+  }, []);
 
-  const save = () => {
-    if (!form.name || !form.email || !form.password) return;
-    let updated;
+  const openAdd = () => { setForm({ name: "", email: "", role: "viewer" }); setEditId(null); setModal(true); };
+  const openEdit = (u) => { setForm({ name: u.name, email: u.email, role: u.role }); setEditId(u.id); setModal(true); };
+
+  const save = async () => {
+    if (!form.name || !form.email) return;
     if (editId) {
-      updated = users.map(u => u.id === editId ? { ...u, ...form } : u);
-    } else {
-      updated = [...users, { ...form, id: `user_${Date.now()}` }];
+      // Update nama dan role di tabel profiles
+      const { error } = await supabase
+        .from('profiles')
+        .update({ name: form.name, role: form.role })
+        .eq('id', editId);
+      if (!error) {
+        setUsersState(prev => prev.map(u => u.id === editId ? { ...u, name: form.name, role: form.role } : u));
+      }
     }
-    saveUsers(updated);
-    setUsersState(updated);
+    // Catatan: tambah user baru dilakukan via Supabase Dashboard (invite user)
     setModal(false);
   };
 
-  const remove = (id) => {
+  const remove = async (id) => {
     if (id === currentUser.id) return alert("Tidak bisa menghapus akun sendiri.");
-    const updated = users.filter(u => u.id !== id);
-    saveUsers(updated);
-    setUsersState(updated);
+    // Hapus dari auth.users (cascade ke profiles via FK)
+    const { error } = await supabase.auth.admin?.deleteUser(id);
+    if (!error) {
+      setUsersState(prev => prev.filter(u => u.id !== id));
+    } else {
+      alert("Hapus user hanya bisa dilakukan via Supabase Dashboard.");
+    }
   };
 
   return (
@@ -1127,42 +1199,57 @@ function UsersPage({ currentUser }) {
         <Btn onClick={openAdd}><Icon name="plus" size={14} color="#fff" /> Tambah user</Btn>
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        {users.map(u => (
-          <div key={u.id} style={{ background: "#fff", border: "1.5px solid #f0f0ee", borderRadius: 12, padding: "14px 18px", display: "flex", alignItems: "center", gap: 14 }}>
-            <div style={{ width: 40, height: 40, borderRadius: "50%", background: u.role === "admin" ? "#EEEDFE" : "#E6F1FB", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 800, color: u.role === "admin" ? "#534AB7" : "#185FA5" }}>
-              {u.name.charAt(0)}
+      {loadingUsers ? (
+        <div style={{ textAlign: "center", padding: "40px 0", color: "#aaa" }}>Memuat data user...</div>
+      ) : (
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          {users.map(u => (
+            <div key={u.id} style={{ background: "#fff", border: "1.5px solid #f0f0ee", borderRadius: 12, padding: "14px 18px", display: "flex", alignItems: "center", gap: 14 }}>
+              <div style={{ width: 40, height: 40, borderRadius: "50%", background: u.role === "admin" ? "#EEEDFE" : "#E6F1FB", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 800, color: u.role === "admin" ? "#534AB7" : "#185FA5" }}>
+                {(u.name || u.email || '?').charAt(0).toUpperCase()}
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1a1a" }}>{u.name} {u.id === currentUser.id && <span style={{ fontSize: 10, background: "#EAF3DE", color: "#27500A", padding: "2px 6px", borderRadius: 6, marginLeft: 6 }}>Anda</span>}</div>
+                <div style={{ fontSize: 12, color: "#888" }}>{u.email}</div>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <span style={{ fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 20, background: u.role === "admin" ? "#EEEDFE" : "#E6F1FB", color: u.role === "admin" ? "#534AB7" : "#185FA5" }}>
+                  {u.role === "admin" ? "Administrator" : "Viewer"}
+                </span>
+                <Btn variant="secondary" size="sm" onClick={() => openEdit(u)}><Icon name="edit" size={12} /></Btn>
+                {u.id !== currentUser.id && <Btn variant="danger" size="sm" onClick={() => remove(u.id)}><Icon name="trash" size={12} /></Btn>}
+              </div>
             </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1a1a" }}>{u.name} {u.id === currentUser.id && <span style={{ fontSize: 10, background: "#EAF3DE", color: "#27500A", padding: "2px 6px", borderRadius: 6, marginLeft: 6 }}>Anda</span>}</div>
-              <div style={{ fontSize: 12, color: "#888" }}>{u.email}</div>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <span style={{ fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 20, background: u.role === "admin" ? "#EEEDFE" : "#E6F1FB", color: u.role === "admin" ? "#534AB7" : "#185FA5" }}>
-                {u.role === "admin" ? "Administrator" : "Viewer"}
-              </span>
-              <Btn variant="secondary" size="sm" onClick={() => openEdit(u)}><Icon name="edit" size={12} /></Btn>
-              {u.id !== currentUser.id && <Btn variant="danger" size="sm" onClick={() => remove(u.id)}><Icon name="trash" size={12} /></Btn>}
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       <Modal open={modal} onClose={() => setModal(false)} title={editId ? "Edit User" : "Tambah User Baru"} width={440}>
-        <Input label="Nama lengkap" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} placeholder="Nama..." />
-        <Input label="Email" type="email" value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))} placeholder="email@perusahaan.com" />
-        <Input label="Password" type="text" value={form.password} onChange={e => setForm(p => ({ ...p, password: e.target.value }))} placeholder="Password..." />
-        <Select label="Role" value={form.role} onChange={e => setForm(p => ({ ...p, role: e.target.value }))}>
-          <option value="admin">Administrator (bisa edit)</option>
-          <option value="viewer">Viewer (hanya lihat)</option>
-        </Select>
+        {editId ? (
+          <>
+            <Input label="Nama lengkap" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} placeholder="Nama..." />
+            <Select label="Role" value={form.role} onChange={e => setForm(p => ({ ...p, role: e.target.value }))}>
+              <option value="admin">Administrator (bisa edit)</option>
+              <option value="viewer">Viewer (hanya lihat)</option>
+            </Select>
+          </>
+        ) : (
+          <div style={{ background: "#f7f6f2", borderRadius: 8, padding: "14px 16px", fontSize: 13, color: "#555", marginBottom: 16 }}>
+            <strong>Cara menambah user baru:</strong>
+            <ol style={{ margin: "8px 0 0", paddingLeft: 18, lineHeight: 1.8 }}>
+              <li>Buka <strong>Supabase Dashboard → Authentication → Users</strong></li>
+              <li>Klik <strong>Invite user</strong> dan masukkan email</li>
+              <li>Setelah user konfirmasi, update role-nya via SQL atau edit di halaman ini</li>
+            </ol>
+          </div>
+        )}
         <div style={{ background: "#f7f6f2", borderRadius: 8, padding: "10px 12px", fontSize: 12, color: "#888", marginBottom: 16 }}>
           <strong>Admin</strong> dapat mengubah status, PIC, deadline, catatan, dan upload dokumen.<br />
           <strong>Viewer</strong> hanya dapat melihat data tanpa bisa melakukan perubahan.
         </div>
         <div style={{ display: "flex", gap: 8 }}>
-          <Btn onClick={save} style={{ flex: 1 }}>Simpan</Btn>
-          <Btn variant="secondary" onClick={() => setModal(false)}>Batal</Btn>
+          {editId && <Btn onClick={save} style={{ flex: 1 }}>Simpan</Btn>}
+          <Btn variant="secondary" onClick={() => setModal(false)} style={{ flex: editId ? 0 : 1 }}>Tutup</Btn>
         </div>
       </Modal>
     </div>
@@ -1173,18 +1260,92 @@ function UsersPage({ currentUser }) {
 // APP ROOT
 // ─────────────────────────────────────────────
 export default function App() {
-  const [user, setUser] = useState(() => loadSession());
+  const [user, setUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
   const [page, setPage] = useState("dashboard");
-  const [data, setData] = useState(() => loadData());
+  const [data, setData] = useState({});
+  const [dataLoading, setDataLoading] = useState(true);
 
-  const handleLogin = (u) => { saveSession(u); setUser(u); };
-  const handleLogout = () => { saveSession(null); setUser(null); setPage("dashboard"); };
+  // Cek session saat app dibuka & listen perubahan auth
+  useEffect(() => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (session) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('name, role')
+          .eq('id', session.user.id)
+          .single();
+        setUser({ ...session.user, name: profile?.name || session.user.email, role: profile?.role || 'viewer' });
+      }
+      setAuthLoading(false);
+    });
 
-  const handleSave = (id, form) => {
-    const updated = { ...data, [id]: form };
-    setData(updated);
-    saveData(updated);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_OUT') { setUser(null); setData({}); setDataLoading(true); }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Fetch data kriteria dari Supabase setelah login
+  useEffect(() => {
+    if (!user) return;
+    const fetchData = async () => {
+      setDataLoading(true);
+      const { data: rows, error } = await supabase.from('criteria_data').select('*');
+      if (error) { console.error(error); setDataLoading(false); return; }
+      const mapped = {};
+      rows.forEach(row => {
+        mapped[row.id] = {
+          status: row.status,
+          pic: row.pic || '',
+          deadline: row.deadline || '',
+          notes: row.notes || '',
+          docs: [],
+          updatedAt: row.updated_at,
+          updatedBy: row.updated_by || '',
+        };
+      });
+      setData(mapped);
+      setDataLoading(false);
+    };
+    fetchData();
+  }, [user]);
+
+  const handleLogin = (u) => { setUser(u); };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    setData({});
+    setPage("dashboard");
   };
+
+  const handleSave = async (id, form) => {
+    const { error } = await supabase
+      .from('criteria_data')
+      .upsert({
+        id,
+        status: form.status,
+        pic: form.pic,
+        deadline: form.deadline || null,
+        notes: form.notes,
+        updated_at: new Date().toISOString(),
+        updated_by: user.name,
+      });
+    if (error) { console.error('Gagal simpan:', error); return; }
+    setData(prev => ({
+      ...prev,
+      [id]: { ...form, updatedAt: new Date().toISOString(), updatedBy: user.name }
+    }));
+  };
+
+  // Tampilkan loading screen sementara cek session
+  if (authLoading) return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', fontFamily: "'Plus Jakarta Sans', 'Segoe UI', sans-serif", background: '#f7f6f2', color: '#888', fontSize: 14 }}>
+      Memuat...
+    </div>
+  );
 
   if (!user) return <LoginPage onLogin={handleLogin} />;
 
@@ -1194,11 +1355,17 @@ export default function App() {
     <div style={{ display: "flex", minHeight: "100vh", background: "#f7f6f2", fontFamily: "'Plus Jakarta Sans', 'Segoe UI', sans-serif" }}>
       <Sidebar page={page} setPage={setPage} user={user} onLogout={handleLogout} />
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
-        {page === "dashboard" && <DashboardPage data={data} setPage={setPage} />}
-        {page === "tracker" && <TrackerPage data={data} onSave={handleSave} isAdmin={isAdmin} user={user} />}
-        {page === "documents" && <DocumentsPage data={data} />}
-        {page === "report" && <ReportPage data={data} />}
-        {page === "users" && isAdmin && <UsersPage currentUser={user} />}
+        {dataLoading ? (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1, color: '#888', fontSize: 14 }}>Memuat data...</div>
+        ) : (
+          <>
+            {page === "dashboard" && <DashboardPage data={data} setPage={setPage} />}
+            {page === "tracker" && <TrackerPage data={data} onSave={handleSave} isAdmin={isAdmin} user={user} />}
+            {page === "documents" && <DocumentsPage data={data} />}
+            {page === "report" && <ReportPage data={data} />}
+            {page === "users" && isAdmin && <UsersPage currentUser={user} />}
+          </>
+        )}
       </div>
     </div>
   );
